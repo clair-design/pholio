@@ -1,6 +1,6 @@
 {
-  "name": "dokiv",
-  "version": "2.3.0",
+  "name": "pholio",
+  "version": "0.1.0",
   "description": "A document generator with vue and markdown",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "bin": "./bin/index",
   "repository": {
-    "url": "git@github.com:AngusFu/dokiv.git",
+    "url": "git@github.com:clair-design/pholio.git",
     "type": "git"
   },
   "author": "wemlion <angusfu1126@qq.com>",
@@ -42,8 +42,6 @@
     "vue-meta": "^1.5.0",
     "vue-router": "^3.0.1",
     "vue-server-renderer": "^2.5.16",
-    "vue-template-compiler": "^2.5.16",
-    "vueify": "^9.4.1",
     "yaml-front-matter": "^3.4.1"
   },
   "devDependencies": {
