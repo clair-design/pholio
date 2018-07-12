@@ -1,0 +1,21 @@
+var routes = [
+<% pages.forEach(function(item, index){ %>
+  {
+    path: "<%- item.fullPath %>",
+    component: <%- item.content %>,
+    meta: { layout: "<%- item.layout %>" }
+  },
+<% }); %>
+  { path: "*", redirect: "/404" }
+];
+
+module.exports = {
+  el: "#app",
+  routes: routes,
+  mode: "<%= routerMode %>",
+  render: function (h) {
+    var layout = this.$route.meta.layout || 'default'
+    return h('layout-' + layout)
+  },
+  data: {}
+}

@@ -1,0 +1,31 @@
+<!doctype html>
+<html data-vue-meta-server-rendered <%- htmlAttrs.text() %>>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <%-
+    [title, meta, link, style, script, meta].map(item => item.text()).join('')
+  %>
+  <%- externals.css %>
+  <% if (serviceWorker) { %>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+    }
+  </script>
+  <% } %>
+</head>
+
+<body <%- bodyAttrs.text() %>>
+  <%- noscript.text() %>
+  <%- ssrContent %>
+  <%- externals.js %>
+  <% script.text({ body: true }) %>
+  <script src="/static/vendor.<%= hash.vendor %>.js"></script>
+  <script src="/static/plugins.<%= hash.plugins %>.js"></script>
+  <script src="/static/app.<%= hash.app %>.js"></script>
+</body>
+
+</html>

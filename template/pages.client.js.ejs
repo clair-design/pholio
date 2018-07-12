@@ -1,0 +1,25 @@
+;(function (){
+var routes = [
+<% pages.forEach(function(item, index){ %>
+  {
+    path: "<%- item.fullPath %>",
+    component: function () {
+      return createApp.jsonp("<%- item.hash %>")
+    },
+    meta: { layout: "<%- item.layout %>" }
+  },
+<% }); %>
+  { path: "*", redirect: "/404" }
+];
+
+createApp({
+  el: "#app",
+  routes: routes,
+  mode: "<%= routerMode %>",
+  render: function (h) {
+    var layout = this.$route.meta.layout || 'default'
+    return h('layout-' + layout)
+  },
+  data: {}
+});
+}());
