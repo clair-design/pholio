@@ -38,7 +38,7 @@ module.exports = async file => {
     kCache.set(file, data, expires) // for error fallback
     kCache.save()
 
-    return ret
+    return data
   } catch (e) {
     // TODO
     // report error
