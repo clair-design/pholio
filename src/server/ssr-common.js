@@ -69,7 +69,7 @@ function createApp ({ mode, routes, data, render, plugins }) {
     data: data || {}
   })
 
-  router.onReady(() => app.$mount('#app'))
+  router.onReady(() => app.$mount('#root'))
 
   return { app, router }
 }

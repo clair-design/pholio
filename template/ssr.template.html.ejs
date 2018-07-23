@@ -20,7 +20,7 @@
 
 <body <%- bodyAttrs.text() %>>
   <%- noscript.text() %>
-  <%- ssrContent %>
+  <div id="root"><%- ssrContent %></div>
   <%- externals.js %>
   <% script.text({ body: true }) %>
   <script src="/static/vendor.<%= hash.vendor %>.js"></script>
