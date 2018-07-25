@@ -10,22 +10,28 @@ const renderHTML = data => renderFile(kTemplate, data)
 
 const RE_STATIC = /^\/static\/([a-z]+)\.([a-z0-9]+)\.js/
 
-const app = express()
+const server = express()
 let isListening = false
 const renderer = createRenderer({ template: '<!--vue-ssr-outlet-->' })
 
 module.exports = {
-  config ({ vendor, bones, flesh, pages, app }) {
+  config ({ vendor, bones, flesh, manifest, pages, staticDirectory }) {
     const plugins = evalByVM(bones.content)
     flesh.exports = evalByVM(flesh.content)
     flesh.exports.plugins = plugins
 
     Object.assign(this, {
-      vendor,
-      bones,
-      flesh,
-      pages,
-      app
+      vendor, // vue + vue-router + vue-meta
+      bones, // plugins and layouts
+      pages, // each markdown page
+      manifest, // manifest for browsers
+      staticDirectory,
+      // flesh & bones are bundled toggether in ssr
+      // no code splitting...
+      ssrAppConfig: {
+        ...flesh.exports,
+        plugins
+      }
     })
 
     this.start()
@@ -33,23 +39,25 @@ module.exports = {
 
   start () {
     if (isListening === false) {
-      this.setRoutes(app)
-      app.listen(1126)
+      this.setRoutes()
+      server.listen(1126)
       isListening = true
       console.log('Server listening on port: 1126')
     } else {
+      // TODO
+      // send reload signal...
       console.log('Server updates...')
     }
   },
 
   setRoutes () {
     // favicon
-    app.use('/favicon.ico', (req, res) => res.end(''))
+    server.use('/favicon.ico', (req, res) => res.end(''))
 
     // special files
-    app.use(RE_STATIC, (req, res, next) => {
+    server.use(RE_STATIC, (req, res, next) => {
       res.set('Content-Type', 'application/javascript')
-      const { vendor, bones, app, pages } = this
+      const { vendor, bones, manifest, pages } = this
 
       const type = req.params[0]
       const hash = req.params[1]
@@ -62,8 +70,8 @@ module.exports = {
         return res.end(bones.content)
       }
 
-      if (type === 'app' && hash === app.hash) {
-        return res.end(app.content)
+      if (type === 'manifest' && hash === manifest.hash) {
+        return res.end(manifest.content)
       }
 
       if (type === 'page' && pages.has(hash)) {
@@ -73,21 +81,16 @@ module.exports = {
       next()
     })
 
-    // TODO
-    // support for static assets
-    // app.use('/static', express.static(this.staticDir))
-    app.use('/static', (req, res) => {
-      res.end('')
-    })
+    server.use('/static', express.static(this.staticDirectory))
 
-    app.use('*', (req, res) => {
+    server.use('*', (req, res) => {
       res.set('Content-Type', 'text/html')
       this.handleSSR(req, res)
     })
   },
 
   handleSSR (req, res) {
-    const { app, router } = createApp(this.flesh.exports)
+    const { app, router } = createApp(this.ssrAppConfig)
     router.push(req.originalUrl)
     router.onReady(async () => {
       if (!router.getMatchedComponents().length) {
@@ -101,7 +104,7 @@ module.exports = {
           hash: {
             vendor: this.vendor.hash,
             plugins: this.bones.hash,
-            app: this.app.hash
+            manifest: this.manifest.hash
           },
           externals: {
             js: '',

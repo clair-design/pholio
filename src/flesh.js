@@ -8,7 +8,6 @@ const flatten = require('lodash/flatten')
 const uniqFlatten = flow(flatten, uniq)
 
 const { Subject } = require('rxjs')
-// const { mergeMap } = require('rxjs/operators')
 const md2vue = require('./compiler/md2vue')
 const rxwatch = require('./util/rxwatch')
 

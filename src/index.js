@@ -65,7 +65,7 @@ const infra$ = combineLatest(bones$, vendor$).pipe(
   )
 )
 
-combineLatest(infra$, flesh$).subscribe(data => {
+combineLatest(infra$, flesh$).subscribe(async data => {
   const [[bones, vendor], flesh] = data
 
   const pages = [...flesh.values()]
@@ -76,24 +76,23 @@ combineLatest(infra$, flesh$).subscribe(data => {
     routerMode: 'history'
   }
 
-  Promise.all([
+  const [resClient, resServer] = await Promise.all([
     renderFile(kClientTempl, option),
     renderFile(kServerTempl, option)
-  ]).then(([resClient, resServer]) => {
-    devServer.config({
-      vendor,
-      bones,
-      flesh: {
-        content: resServer,
-        hash: hasSum(resServer)
-      },
-      pages: new Map(pages.map(({ hash, content }) => [hash, content])),
-      app: {
-        content: resClient,
-        hash: hasSum(resClient)
-      }
-    })
+  ])
+
+  devServer.config({
+    vendor,
+    bones,
+    flesh: {
+      content: resServer,
+      hash: hasSum(resServer)
+    },
+    manifest: {
+      content: resClient,
+      hash: hasSum(resClient)
+    },
+    pages: new Map(pages.map(({ hash, content }) => [hash, content])),
+    staticDirectory: resolve(process.env.NPM_PREFIX, 'example/static')
   })
-  // FOR SSR MODE
-  // const ssrTemplate = '__jsonpResolve("<%- item.hash %>", <%- item.content %>)'
 })

@@ -21,6 +21,7 @@ module.exports = async (file, content) => {
     layout,
     route,
     meta,
+    vars,
     markdown,
     highlight = 'prism'
   } = loadFront(content.trim(), 'markdown')
@@ -31,6 +32,14 @@ module.exports = async (file, content) => {
   const fullPath = isMain ? '/' : `/${_route}`
 
   const config = Object.assign({ name }, userConfig, { highlight })
+
+  // inject variables to markdown page
+  config.extend.computed = {
+    // eslint-disable-next-line
+    $vars: new Function(`return ${JSON.stringify(vars || {})}`),
+    // eslint-disable-next-line
+    $page: new Function(`return ${JSON.stringify({ title, route, layout })}`),
+  }
   config.extend.metaInfo = {
     ...config.extend.metaInfo,
     ...meta,
