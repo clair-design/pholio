@@ -1,6 +1,7 @@
 const { resolve } = require('path')
 const hasSum = require('hash-sum')
-const { skip, distinctUntilChanged } = require('rxjs/operators')
+const isEqual = require('lodash/isEqual')
+const { map, skip, distinctUntilChanged } = require('rxjs/operators')
 const { BehaviorSubject, Observable, combineLatest } = require('rxjs')
 const skipOne = skip(1)
 
@@ -57,22 +58,78 @@ const bones$ = getBonesStream({
 })
 const flesh$ = getFleshStream(['example/content/**/*.md'])
 
-// https://rxjs-dev.firebaseapp.com/guide/v6/migration#dep-methods
+const isProd = process.env.NODE_ENV === 'production'
 const infra$ = combineLatest(bones$, vendor$).pipe(
-  distinctUntilChanged(
-    ([bone1, vendor1], [bone2, vendor2]) =>
-      bone1.hash === bone2.hash && vendor1.hash === vendor2.hash
-  )
+  distinctUntilChanged(([bone1, vendor1], [bone2, vendor2]) => {
+    const scriptUnchanged =
+      vendor1.hash === vendor2.hash && bone1.script.hash === bone2.script.hash
+
+    if (!isProd) {
+      return scriptUnchanged
+    }
+
+    if (bone1.styles) {
+      return scriptUnchanged && bone1.styles.hash === bone2.styles.hash
+    }
+  })
 )
 
+flesh$.subscribe(({ type, delta }) => {
+  if (type === 'delete') {
+    const { previous } = delta
+    return devServer.emit({ type, payload: { previous } })
+  }
+
+  if (type === 'update' || type === 'add') {
+    const { previous, current } = delta
+    return devServer.emit({ type, payload: { previous, current } })
+  }
+})
+
+flesh$.pipe(
+  map(data => {
+    const pages = [...data.payload.values()]
+    const navInfo = pages.map(page => {
+      return {
+        title: page.title,
+        path: page.fullPath,
+        layout: page.layout
+      }
+    })
+    return navInfo
+  }),
+  distinctUntilChanged((a, b) => isEqual(a, b))
+).subscribe(navInfo => {
+  devServer.emit({
+    type: 'prototype',
+    payload: {
+      key: '$pages',
+      value: navInfo
+    }
+  })
+})
+
+infra$.pipe(skipOne).subscribe(() => {
+  devServer.emit({ type: 'reload' })
+})
+
 combineLatest(infra$, flesh$).subscribe(async data => {
-  const [[bones, vendor], flesh] = data
+  const [infra, { payload: flesh }] = data
+  const [bones, vendor] = infra
 
   const pages = [...flesh.values()]
+  const navInfo = pages.map(page => {
+    return {
+      title: page.title,
+      path: page.fullPath,
+      layout: page.layout
+    }
+  })
 
   // FOR SSR
   const option = {
     pages,
+    navInfo,
     routerMode: 'history'
   }
 
@@ -82,6 +139,7 @@ combineLatest(infra$, flesh$).subscribe(async data => {
   ])
 
   devServer.config({
+    navInfo,
     vendor,
     bones,
     flesh: {

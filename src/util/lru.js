@@ -4,11 +4,10 @@
 const { resolve } = require('path')
 const LRU = require('lru-cache')
 const { exists, ensureFile, readFile, writeFile } = require('fs-extra')
-
-const envPath = process.env.LRU_CACHE_PATH
-const kCacheDir = envPath || resolve(process.cwd(), '.cache')
+const getCacheDir = require('./get-cache-dir')
 
 module.exports = async (filename, option) => {
+  const cacheDir = getCacheDir()
   const cache = LRU(option)
 
   // do not use disk cache
@@ -16,7 +15,7 @@ module.exports = async (filename, option) => {
     return cache
   }
 
-  const file = resolve(kCacheDir, filename)
+  const file = resolve(cacheDir, filename)
 
   if (await exists(file)) {
     try {

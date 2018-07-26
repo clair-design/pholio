@@ -31,8 +31,7 @@ module.exports = async (file, content) => {
   const isMain = arr[0] === 'index' && !arr[1]
   const fullPath = isMain ? '/' : `/${_route}`
 
-  const config = Object.assign({ name }, userConfig, { highlight })
-
+  const config = Object.assign({ name }, { highlight }, userConfig)
   // inject variables to markdown page
   config.extend.computed = {
     // eslint-disable-next-line
@@ -54,7 +53,7 @@ ${compiled.replace(RE_REMOVE, 'false')}
 return module.exports
 })()`
 
-  return { layout, fullPath, content: code }
+  return { title, layout, fullPath, content: code }
 }
 
 function loadConfig () {

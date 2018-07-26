@@ -1,11 +1,11 @@
 const { resolve } = require('path')
-
-const { from } = require('rxjs')
+const { BehaviorSubject } = require('rxjs')
+const { skip } = require('rxjs/operators')
 const hashSum = require('hash-sum')
-const embaler = require('emballer')
 const { readFile } = require('fs-extra')
 
 const LRU = require('./util/lru')
+const cili = require('./util/cili')
 
 let kCache = null
 const kCacheName = 'vendor.json'
@@ -13,7 +13,7 @@ const kCacheOption = { maxAge: 1000 * 60 * 60 * 24 * 7 }
 
 const kEntry = resolve(__dirname, 'server/ssr-common.js')
 
-const rollup = async function () {
+const subscribe = async function (subject) {
   kCache = kCache || (await LRU(kCacheName, kCacheOption))
 
   const env = process.env.NODE_ENV || 'development'
@@ -25,34 +25,25 @@ const rollup = async function () {
   const hit = kCache.get(key)
 
   if (hit) {
-    return hit
+    return subject.next(hit)
   }
 
-  const option = {
+  cili({
     input: kEntry,
-    output: {
-      name: 'createApp',
-      format: 'iife',
-      sourcemap: !isProd ? 'inline' : false
-    },
-    uglify: isProd,
-    postcss: false
-  }
-
-  // potential errors are ignored, which is acceptable here
-  const result = await embaler({ options: [option] })
-  const [{ code }] = result[0]
-  const ret = {
-    content: code,
-    hash: hashSum(code)
-  }
-
-  kCache.set(key, ret)
-  kCache.save()
-
-  return ret
+    moduleName: 'createApp',
+    compress: isProd,
+    extractCSS: false,
+    watch: !isProd
+  }).subscribe(result => {
+    const ret = result.script
+    kCache.set(key, ret)
+    kCache.save()
+    subject.next(ret)
+  })
 }
 
 module.exports = function () {
-  return from(rollup())
+  const subject = new BehaviorSubject(null)
+  subscribe(subject)
+  return subject.pipe(skip(1))
 }

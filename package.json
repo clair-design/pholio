@@ -4,6 +4,7 @@
   "description": "A document generator with vue and markdown",
   "main": "lib/index.js",
   "scripts": {
+    "start": "NODE_ENV=production node src/index.js | bunyan -o short -L",
     "build": "rimraf lib && babel src --out-dir lib"
   },
   "bin": "./bin/index",
@@ -14,10 +15,11 @@
   "author": "wemlion <angusfu1126@qq.com>",
   "license": "MIT",
   "dependencies": {
+    "bunyan": "^1.8.12",
     "chalk": "^2.4.0",
     "chokidar": "^2.0.4",
+    "cili": "^3.1.2",
     "ejs": "^2.6.1",
-    "emballer": "github:clair-design/emballer",
     "execa": "^0.10.0",
     "express": "^4.16.3",
     "express-sse": "^0.5.0",
@@ -25,19 +27,23 @@
     "find-npm-prefix": "^1.0.2",
     "fs-extra": "^7.0.0",
     "get-port": "^3.2.0",
+    "github-markdown-css": "^2.10.0",
     "glob": "^7.1.2",
     "hash-sum": "^1.0.2",
+    "highlight.js": "^9.12.0",
     "lodash": "^4.17.10",
     "lru-cache": "^4.1.3",
     "md2vue": "^4.0.0-alpha.8",
+    "normalize.css": "^8.0.0",
     "opn": "^5.3.0",
+    "postcss-import": "^11.1.0",
+    "postcss-preset-env": "^5.3.0",
     "pug": "^2.0.3",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
     "rxjs": "6",
     "sw-precache": "^5.2.1",
-    "temp-dir": "^1.0.0",
-    "uglify-js": "^3.3.22",
+    "uglify-js": "^3.4.5",
     "vue": "^2.5.16",
     "vue-meta": "^1.5.0",
     "vue-router": "^3.0.1",
@@ -48,11 +54,11 @@
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "rollup-plugin-require-context": "^0.0.2",
+    "rollup-plugin-vue": "3.0.0"
   },
-  "optionalDependencies": {
-    "postcss-import": "^11.1.0"
-  },
+  "optionalDependencies": {},
   "engines": {
     "node": ">=8.0.0"
   }

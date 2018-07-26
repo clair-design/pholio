@@ -6,17 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
-  <%-
-    [title, meta, link, style, script, meta].map(item => item.text()).join('')
-  %>
+  <%- [title, meta, link, style, script, meta].map(item => item.text()).join('') %>
   <%- externals.css %>
-  <% if (serviceWorker) { %>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-    }
-  </script>
+  <% if (hash.stylesheet) { %>
+    <link rel="stylesheet" href="/static/styles.<%= hash.stylesheet %>.css" />
   <% } %>
+  <% if (serviceWorker) { %> <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/service-worker.js') }</script><% } %>
 </head>
 
 <body <%- bodyAttrs.text() %>>
@@ -25,8 +20,7 @@
   <%- externals.js %>
   <% script.text({ body: true }) %>
   <script src="/static/vendor.<%= hash.vendor %>.js"></script>
-  <script src="/static/plugins.<%= hash.plugins %>.js"></script>
+  <script src="/static/framework.<%= hash.framework %>.js"></script>
   <script src="/static/manifest.<%= hash.manifest %>.js"></script>
 </body>
-
 </html>

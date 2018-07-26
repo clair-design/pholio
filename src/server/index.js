@@ -1,24 +1,27 @@
 const { resolve } = require('path')
 const express = require('express')
+const SSE = require('express-sse')
+const UglifyJS = require('uglify-js')
 const { createRenderer } = require('vue-server-renderer')
 const createApp = require('./ssr-common')
 const renderFile = require('../util/render-file')
 const evalByVM = require('../util/vm-eval')
-
+const logger = require('../util/logger')
 const kTemplate = resolve(__dirname, '../../template/ssr.template.html.ejs')
 const renderHTML = data => renderFile(kTemplate, data)
 
-const RE_STATIC = /^\/static\/([a-z]+)\.([a-z0-9]+)\.js/
+const RE_STATIC = /^\/static\/([a-z]+)\.([a-z0-9]+)\.(js|css)/
 
 const server = express()
+const sseInstance = new SSE([{ type: 'init' }])
 let isListening = false
 const renderer = createRenderer({ template: '<!--vue-ssr-outlet-->' })
 
 module.exports = {
-  config ({ vendor, bones, flesh, manifest, pages, staticDirectory }) {
-    const plugins = evalByVM(bones.content)
+  config ({ navInfo, vendor, bones, flesh, manifest, pages, staticDirectory }) {
+    const framework = evalByVM(bones.script.content)
     flesh.exports = evalByVM(flesh.content)
-    flesh.exports.plugins = plugins
+    flesh.exports.framework = framework
 
     Object.assign(this, {
       vendor, // vue + vue-router + vue-meta
@@ -30,7 +33,14 @@ module.exports = {
       // no code splitting...
       ssrAppConfig: {
         ...flesh.exports,
-        plugins
+        plugins: [
+          framework,
+          {
+            install (Vue) {
+              Vue.prototype.$pages = navInfo
+            }
+          }
+        ]
       }
     })
 
@@ -42,11 +52,10 @@ module.exports = {
       this.setRoutes()
       server.listen(1126)
       isListening = true
-      console.log('Server listening on port: 1126')
+      logger.info('Server listening on port: 1126')
     } else {
-      // TODO
-      // send reload signal...
-      console.log('Server updates...')
+      // send signal...
+      logger.info('Server updates...')
     }
   },
 
@@ -54,34 +63,49 @@ module.exports = {
     // favicon
     server.use('/favicon.ico', (req, res) => res.end(''))
 
+    // SSE
+    server.use('/__sse__', sseInstance.init)
+
     // special files
     server.use(RE_STATIC, (req, res, next) => {
-      res.set('Content-Type', 'application/javascript')
       const { vendor, bones, manifest, pages } = this
-
       const type = req.params[0]
       const hash = req.params[1]
+
+      res.set(
+        'Content-Type',
+        type === 'styles' ? 'text/css' : 'application/javascript'
+      )
 
       if (type === 'vendor' && hash === vendor.hash) {
         return res.end(vendor.content)
       }
 
-      if (type === 'plugins' && hash === bones.hash) {
-        return res.end(bones.content)
+      if (type === 'framework' && hash === bones.script.hash) {
+        return res.end(bones.script.content)
       }
 
       if (type === 'manifest' && hash === manifest.hash) {
-        return res.end(manifest.content)
+        return res.end(preprocess(manifest.content))
       }
 
       if (type === 'page' && pages.has(hash)) {
-        return res.end(`__jsonpResolve(${pages.get(hash)})`)
+        const wrapped = `__jsonpResolve(${pages.get(hash)})`
+        return res.end(preprocess(wrapped))
       }
 
+      if (type === 'styles' && bones.styles) {
+        if (hash === bones.styles.hash) {
+          return res.end(bones.styles.content)
+        }
+      }
       next()
     })
 
-    server.use('/static', express.static(this.staticDirectory))
+    const middleware = express.static(this.staticDirectory)
+    server.use('/static', middleware, (_, res) =>
+      res.status(404).end('NOT FOUND')
+    )
 
     server.use('*', (req, res) => {
       res.set('Content-Type', 'text/html')
@@ -99,27 +123,39 @@ module.exports = {
 
       try {
         const result = await renderer.renderToString(app)
+        const { script, styles } = this.bones
+
         const html = await renderHTML({
           ...app.$meta().inject(),
           hash: {
             vendor: this.vendor.hash,
-            plugins: this.bones.hash,
-            manifest: this.manifest.hash
+            framework: script.hash,
+            manifest: this.manifest.hash,
+            stylesheet: styles ? styles.hash : ''
           },
           externals: {
-            js: '',
-            css: ''
+            js: ['<script src="https://lib.baomitu.com/notie/4.3.1/notie.min.js"></script>'],
+            css: ['<link href="https://lib.baomitu.com/notie/4.3.1/notie.min.css" rel="stylesheet">']
           },
           serviceWorker: false,
           ssrContent: result
         })
         res.end(html)
       } catch (e) {
-        // TODO
-        // report error
-        console.log(e)
+        logger.info(e)
         return res.status(500).end(`<pre>${e.stack}</pre>`)
       }
     })
+  },
+
+  emit (message) {
+    sseInstance.send(message)
   }
+}
+
+function preprocess (code) {
+  if (process.env.NODE_ENV === 'production') {
+    return UglifyJS.minify(code).code
+  }
+  return code
 }

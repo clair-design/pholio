@@ -9,16 +9,21 @@ var routes = [
     meta: { layout: "<%- item.layout %>" }
   },
 <% }); %>
-  { path: "*", redirect: "/404" }
+  { path: "*", redirect: "/error" }
 ];
 
+createApp.use({
+  install (Vue) {
+    Vue.prototype.$pages = <%- JSON.stringify(navInfo) %>
+  }
+})
+
 createApp({
-  el: "#root",
   routes: routes,
   mode: "<%= routerMode %>",
   render: function (h) {
     var layout = this.$route.meta.layout || 'default'
-    return h('layout-' + layout)
+    return h('div', { attrs: { id: 'root' } }, [h('layout-' + layout)])
   },
   data: {}
 });
