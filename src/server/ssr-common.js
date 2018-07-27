@@ -40,13 +40,21 @@ module.exports = createApp
 function createApp (option) {
   const { mode, routes, data, render, plugins } = option
   if (plugins) {
-    [].concat(plugins).map(plugin => Vue.use(plugin))
+    ;[].concat(plugins).map(plugin => Vue.use(plugin))
   }
 
   const router = new VueRouter({
     mode: mode || 'hash',
     routes,
     scrollBehavior: () => ({ x: 0, y: 0 })
+  })
+
+  Object.defineProperty(Vue.prototype, '$pageTOC', {
+    get () {
+      const path = router.currentRoute.path
+      const match = Vue.prototype.$pages.filter(page => page.path === path)
+      return match[0] ? match[0].TOC : []
+    }
   })
 
   const app = new Vue({

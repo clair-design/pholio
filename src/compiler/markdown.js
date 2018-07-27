@@ -1,9 +1,12 @@
 const { resolve, relative } = require('path')
+const toSlug = require('limax')
+const visit = require('unist-util-visit')
+const toString = require('mdast-util-to-string')
+const normalizeHeadings = require('remark-normalize-headings')
 
 const md2vue = require('md2vue')
 const { loadFront } = require('yaml-front-matter')
 const { readFile, existsSync } = require('fs-extra')
-
 const pascalCase = require('../util/pascal-case')
 
 const RE_REMOVE = /window\.Vue && Vue\.use\(component\);\s*$/
@@ -31,18 +34,37 @@ module.exports = async (file, content) => {
   const isMain = arr[0] === 'index' && !arr[1]
   const fullPath = isMain ? '/' : `/${_route}`
 
-  const config = Object.assign({ name }, { highlight }, userConfig)
-  // inject variables to markdown page
-  config.extend.computed = {
-    // eslint-disable-next-line
-    $vars: new Function(`return ${JSON.stringify(vars || {})}`),
-    // eslint-disable-next-line
-    $page: new Function(`return ${JSON.stringify({ title, route, layout })}`),
+  const config = Object.assign({ name }, userConfig)
+
+  /**
+   * highlight config in page level
+   */
+  if (highlight) {
+    config.highlight = highlight
   }
-  config.extend.metaInfo = {
-    ...config.extend.metaInfo,
-    ...meta,
-    title
+
+  /**
+   * remarkPlugins
+   */
+  const pageNav = []
+  config.remarkPlugins = [
+    normalizeHeadings,
+    slugify(arr => pageNav.push(...arr))
+  ]
+
+  const { extend } = config
+  /**
+   * inject metaInfo
+   */
+  Object.assign(extend.metaInfo, meta, { title })
+  /**
+   * inject variables to markdown page
+   */
+  extend.computed = {
+    // eslint-disable-next-line no-new-func
+    $vars: new Function(`return ${JSON.stringify(vars || {})}`),
+    // eslint-disable-next-line no-new-func
+    $page: new Function(`return ${JSON.stringify({ title, route, layout })}`)
   }
 
   const compiled = await md2vue(markdown, config)
@@ -53,7 +75,7 @@ ${compiled.replace(RE_REMOVE, 'false')}
 return module.exports
 })()`
 
-  return { title, layout, fullPath, content: code }
+  return { title, layout, fullPath, pageNav, content: code }
 }
 
 function loadConfig () {
@@ -76,4 +98,33 @@ function loadConfig () {
   }
 
   return defaults
+}
+
+function slugify (callback) {
+  return () => ast => {
+    let h2 = null
+    const nav = []
+    visit(ast, 'heading', visiter)
+    callback(nav.filter(item => item.depth === 2))
+
+    function visiter (node) {
+      const text = toString(node)
+      const slug = toSlug(text)
+
+      if (!node.data) {
+        node.data = {}
+      }
+      const { depth, data } = node
+      ;(data.hProperties = data.hProperties || {}).id = slug
+      data.id = slug
+
+      // side effects
+      if (depth === 2) {
+        h2 = { depth, slug, text, children: [] }
+        nav.push(h2)
+      } else if (h2) {
+        h2.children.push({ depth, slug, text })
+      }
+    }
+  }
 }

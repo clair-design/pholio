@@ -6,7 +6,9 @@ var routes = [
     component: function () {
       return createApp.jsonp("<%- item.hash %>")
     },
-    meta: { layout: "<%- item.layout %>" }
+    meta: {
+      layout: "<%- item.layout %>"
+    }
   },
 <% }); %>
   { path: "*", redirect: "/error" }

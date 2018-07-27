@@ -1,5 +1,5 @@
 // for test
 module.exports = {
   highlight: 'highlight.js',
-  inject: `<hr />`
+  inject: '<vue-demo-tool />'
 }

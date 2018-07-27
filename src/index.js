@@ -122,7 +122,8 @@ combineLatest(infra$, flesh$).subscribe(async data => {
     return {
       title: page.title,
       path: page.fullPath,
-      layout: page.layout
+      layout: page.layout,
+      TOC: page.pageNav
     }
   })
 
@@ -138,6 +139,7 @@ combineLatest(infra$, flesh$).subscribe(async data => {
     renderFile(kServerTempl, option)
   ])
 
+  // console.log(resServer)
   devServer.config({
     navInfo,
     vendor,
