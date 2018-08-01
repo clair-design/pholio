@@ -7,8 +7,10 @@ const createApp = require('./ssr-common')
 const renderFile = require('../util/renderFile')
 const evalByVM = require('../util/vmEval')
 const logger = require('../util/logger')
-const kTemplate = resolve(__dirname, '../../template/ssr.template.html.ejs')
-const renderHTML = data => renderFile(kTemplate, data)
+const kSSRTemplate = resolve(__dirname, '../../template/ssr.template.html.ejs')
+const kHashTemplate = resolve(__dirname, '../../template/hash.template.html.ejs')
+const renderSSRTempl = data => renderFile(kSSRTemplate, data)
+const renderHashTempl = data => renderFile(kHashTemplate, data)
 
 const RE_STATIC = /^\/static\/([a-z]+)\.([a-z0-9]+)\.(js|css)/
 
@@ -19,8 +21,9 @@ const renderer = createRenderer({ template: '<!--vue-ssr-outlet-->' })
 
 module.exports = {
   config ({
-    staticDirectory,
     navInfo,
+    routerMode,
+    staticDirectory,
     vendor,
     bones,
     flesh,
@@ -28,20 +31,15 @@ module.exports = {
     pages,
     externals
   }) {
-    const framework = evalByVM(bones.script.content)
-    flesh.exports = evalByVM(flesh.content)
-    flesh.exports.framework = framework
-
-    Object.assign(this, {
-      vendor, // vue + vue-router + vue-meta
-      bones, // plugins and layouts
-      pages, // each markdown page
-      manifest, // manifest for browsers
-      externals,
-      staticDirectory,
-      // flesh & bones are bundled toggether in ssr
+    let ssrAppConfig = null
+    if (routerMode !== 'history') {
+      // flesh & bones are bundled toggether in ssr mode
       // no code splitting...
-      ssrAppConfig: {
+      const framework = evalByVM(bones.script.content)
+      flesh.exports = evalByVM(flesh.content)
+      flesh.exports.framework = framework
+
+      ssrAppConfig = {
         ...flesh.exports,
         plugins: [
           framework,
@@ -52,6 +50,17 @@ module.exports = {
           }
         ]
       }
+    }
+
+    Object.assign(this, {
+      vendor, // vue + vue-router + vue-meta
+      bones, // plugins and layouts
+      pages, // each markdown page
+      manifest, // manifest for browsers
+      externals,
+      routerMode,
+      staticDirectory,
+      ssrAppConfig
     })
 
     this.start()
@@ -127,6 +136,24 @@ module.exports = {
   },
 
   handleSSR (req, res) {
+    const { script, styles } = this.bones
+    const renderData = {
+      hash: {
+        vendor: this.vendor.hash,
+        framework: script.hash,
+        manifest: this.manifest.hash,
+        stylesheet: styles ? styles.hash : ''
+      },
+      externals: this.externals,
+      serviceWorker: process.env.NODE_ENV === 'production'
+    }
+
+    if (this.routerMode !== 'history') {
+      return renderHashTempl(renderData).then(html => {
+        res.end(html)
+      })
+    }
+
     const { app, router } = createApp(this.ssrAppConfig)
     router.push(req.originalUrl)
     router.onReady(async () => {
@@ -135,20 +162,10 @@ module.exports = {
       }
 
       try {
-        const result = await renderer.renderToString(app)
-        const { script, styles } = this.bones
-
-        const html = await renderHTML({
+        const html = await renderSSRTempl({
           ...app.$meta().inject(),
-          hash: {
-            vendor: this.vendor.hash,
-            framework: script.hash,
-            manifest: this.manifest.hash,
-            stylesheet: styles ? styles.hash : ''
-          },
-          externals: this.externals,
-          serviceWorker: process.env.NODE_ENV === 'production',
-          ssrContent: result
+          ...renderData,
+          ssrContent: await renderer.renderToString(app)
         })
         res.end(html)
       } catch (e) {

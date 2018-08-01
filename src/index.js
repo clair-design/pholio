@@ -157,6 +157,7 @@ module.exports = function main (config) {
 
     const serverConfig = {
       navInfo,
+      routerMode,
       staticDirectory,
       externals: concatExternals(config.externals),
       vendor,
@@ -184,7 +185,7 @@ module.exports = function main (config) {
 
       const resources = [
         ...(
-          routerMode === 'history' ? pages.map(page => page.fullPath) : '/'
+          routerMode !== 'hash' ? pages.map(page => page.fullPath) : '/'
         ),
         ...pages.map(page => `/static/page.${page.hash}.js`),
         `/static/vendor.${vendor.hash}.js`,
@@ -209,19 +210,22 @@ module.exports = function main (config) {
       await copy(staticDirectory, join(dest, 'static'))
       logger.succeed('SSR Done.')
 
-      require('sw-precache').write(
-        `${dest}/service-worker.js`,
-        {
+      if (routerMode !== 'hash') {
+        const params = {
           staticFileGlobs: [
             `${dest}/static/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}`
           ],
           stripPrefix: dest.replace(/\\/g, '/'),
           logger: data => logger.succeed(data)
-        },
-        function () {
-          process.exit(0)
         }
-      )
+        require('sw-precache').write(
+          `${dest}/service-worker.js`,
+          params,
+          () => process.exit(0)
+        )
+      } else {
+        process.exit(0)
+      }
     }
   })
 }

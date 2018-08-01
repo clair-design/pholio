@@ -9,7 +9,7 @@
   <%- [title, meta, link, style, script, meta].map(item => item.text()).join('') %>
   <%- externals.css %>
   <% if (hash.stylesheet) { %>
-    <link rel="stylesheet" href="/static/styles.<%= hash.stylesheet %>.css" />
+  <link rel="stylesheet" href="/static/styles.<%= hash.stylesheet %>.css" />
   <% } %>
   <% if (serviceWorker) { %> <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/service-worker.js') }</script><% } %>
 </head>

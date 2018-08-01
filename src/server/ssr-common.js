@@ -19,11 +19,13 @@ createApp.jsonp = function (id) {
     return Promise.resolve(jsonpCache[id])
   }
 
+  const { mode } = cachedOption
+  const staticPath = mode !== 'history' ? './static' : '/static'
   // client
   if (typeof window !== 'undefined') {
     return new Promise(resolve => {
       window.__jsonpResolve = module => (jsonpCache[id] = module)
-      jsonpClient(`/static/page.${id}.js`, function () {
+      jsonpClient(`${staticPath}/page.${id}.js`, function () {
         const page = jsonpCache[id]
         page.__hash = id
         resolve(page)
@@ -37,6 +39,8 @@ createApp.jsonp = function (id) {
 module.exports = createApp
 
 function createApp (option) {
+  cachedOption = { ...option }
+
   const { mode, routes, data, render, plugins } = option
   if (plugins) {
     ;[].concat(plugins).map(plugin => Vue.use(plugin))
@@ -65,7 +69,7 @@ function createApp (option) {
   })
 
   router.onReady(() => app.$mount('#root'))
-  cachedOption = objectAssign(option, { app, router })
+  objectAssign(cachedOption, { app, router })
   return { app, router }
 }
 
