@@ -229,4 +229,7 @@ module.exports.clean = () => {
   logger.stop()
 }
 
-process.on('uncaughtException', module.exports.clean)
+process.on('uncaughtException', (e) => {
+  logger.fail('Uncaught exception:')
+  console.error(e)
+})

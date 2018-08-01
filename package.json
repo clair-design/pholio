@@ -1,14 +1,16 @@
 {
   "name": "pholio",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A document generator with vue and markdown",
   "main": "src/index.js",
   "files": [
     "src",
-    "bin"
+    "bin",
+    "template"
   ],
   "scripts": {
-    "start": "./bin/index start"
+    "start": "PORT=3009 ./bin/index start",
+    "build": "PORT=3009 ./bin/index build"
   },
   "bin": "./bin/index",
   "repository": {

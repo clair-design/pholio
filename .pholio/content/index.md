@@ -3,8 +3,6 @@ title: 首页
 route: /
 
 vars:
-  date: '2018-07-25'
-  func: 222
   menu:
     - about
     - desc
@@ -17,7 +15,7 @@ vars:
 {{ item }}
 </router-link>
 
-## 沧浪之水清兮 可以濯我缨~~
+## Example
 
 Page info:
 
@@ -34,6 +32,7 @@ Local vars:
 
 ```html
 <button @click="clickme()">click me</button>
+
 <script>
 export default {
   methods: {
@@ -43,4 +42,10 @@ export default {
   }
 }
 </script>
+
+<style>
+  button {
+    background: #f0f998;
+  }
+</style>
 ```

@@ -64,7 +64,12 @@ module.exports = async (file, content) => {
     $page: new Function(`return ${JSON.stringify({ title, route, layout })}`)
   }
 
+  // HACK
+  const vueEnv = process.env.VUE_ENV
+  process.env.VUE_ENV = 'browser'
   const compiled = await md2vue(markdown, config)
+  process.env.VUE_ENV = vueEnv
+
   const code = `(function(){
 var exports = {}
 var module = { epxorts: exports }
