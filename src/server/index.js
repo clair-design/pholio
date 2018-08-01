@@ -32,7 +32,7 @@ module.exports = {
     externals
   }) {
     let ssrAppConfig = null
-    if (routerMode !== 'history') {
+    if (routerMode === 'history') {
       // flesh & bones are bundled toggether in ssr mode
       // no code splitting...
       const framework = evalByVM(bones.script.content)
