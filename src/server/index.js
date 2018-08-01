@@ -64,11 +64,11 @@ module.exports = {
       server.listen(PORT)
       isListening = true
       if (process.env.NODE_ENV !== 'production') {
-        logger.info(`Server listening on port: ${PORT}.`)
+        logger.succeed(`Server listening on port: ${PORT}`)
       }
     } else {
       // send signal...
-      logger.info('Server updates...')
+      logger.succeed('Updating...')
     }
   },
 
@@ -152,7 +152,7 @@ module.exports = {
         })
         res.end(html)
       } catch (e) {
-        logger.info(e)
+        logger.fail(e)
         return res.status(500).end(`<pre>${e.stack}</pre>`)
       }
     })

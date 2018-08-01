@@ -53,15 +53,12 @@ const getFleshStream = patterns => {
  * main logics
  */
 // npm-prefix: project root/base dir
-process.env.NPM_PREFIX = require('execa').shellSync('npm prefix').stdout
+process.env.NPM_PREFIX = process.env.NPM_PREFIX ||
+  require('execa').shellSync('npm prefix').stdout
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const isProd = process.env.NODE_ENV === 'production'
 
-process.on('uncaughtException', () => {
-  removeSync(getCacheDir())
-})
-
-function main (config) {
+module.exports = function main (config) {
   process.env.PORT = config.PORT || (process.env.PORT || 3000)
   const npmPrefix = process.env.NPM_PREFIX
   const staticDirectory = resolve(npmPrefix, config.assetPath)
@@ -174,10 +171,12 @@ function main (config) {
       pages: new Map(pages.map(({ hash, content }) => [hash, content]))
     }
 
+    await new Promise(resolve => setTimeout(resolve, 100))
+
     devServer.config(serverConfig)
 
     if (isProd) {
-      logger.info('SSR started.')
+      logger.succeed('SSR started.')
       const dest = resolve(npmPrefix, config.output || '.site')
       const PORT = process.env.PORT
       const request = require('request-promise')
@@ -200,12 +199,12 @@ function main (config) {
             await ensureFile(path)
             await writeFile(path, html)
           })
-          .catch(e => logger.info(url))
+          .catch(e => logger.fail(url))
       })
 
       await Promise.all(promises)
       await copy(staticDirectory, join(dest, 'static'))
-      logger.info('SSR Done.')
+      logger.succeed('SSR Done.')
 
       require('sw-precache').write(
         `${dest}/service-worker.js`,
@@ -213,10 +212,10 @@ function main (config) {
           staticFileGlobs: [
             `${dest}/static/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}`
           ],
-          stripPrefix: dest.replace(/\\/g, '/')
+          stripPrefix: dest.replace(/\\/g, '/'),
+          logger: data => logger.succeed(data)
         },
         function () {
-          logger.info('Done.')
           process.exit(0)
         }
       )
@@ -224,4 +223,10 @@ function main (config) {
   })
 }
 
-main(require('../pholio.config.js'))
+module.exports.clean = () => {
+  removeSync(getCacheDir())
+  logger.succeed('Done.')
+  logger.stop()
+}
+
+process.on('uncaughtException', module.exports.clean)

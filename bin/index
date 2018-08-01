@@ -1,0 +1,56 @@
+#!/usr/bin/env node
+const { resolve } = require('path')
+const program = require('commander')
+const version = require('../package.json').version
+
+program.version(version)
+
+program
+  .command('start')
+  .description('start watching and serving...')
+  .action(pholioMain)
+
+program
+  .command('build')
+  .description('render to static generated files')
+  .action(pholioMain)
+
+program
+  .command('clean')
+  .description('clean the working directory `.cache`')
+  .action(pholioMain)
+
+program
+  .command('help [command]')
+  .description('display help information for a command')
+  .action(function (command) {
+    let cmd = program.commands.find(c => c.name() === command) || program
+    cmd.help()
+  })
+
+const args = process.argv
+if (args[2] === '--help' || args[2] === '-h') args[2] = 'help'
+if (!args[2] || !program.commands.some(c => c.name() === args[2])) {
+  args.splice(2, 0, 'start')
+}
+
+program.parse(args)
+
+function pholioMain (command) {
+  const name = command.name()
+  process.env.NPM_PREFIX = require('execa').shellSync('npm prefix').stdout
+
+  if (name === 'build') {
+    process.env.NODE_ENV = 'production'
+  } else {
+    process.env.NODE_ENV = 'development'
+  }
+
+  const pholio = require('../src')
+  if (name === 'clean') {
+    return pholio.clean()
+  }
+
+  const config = resolve(process.env.NPM_PREFIX, 'pholio.config.js')
+  pholio(require(config))
+}

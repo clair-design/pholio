@@ -1,5 +1,4 @@
-module.exports = {
-  info (...args) {
-    console.log.apply(console, args)
-  }
-}
+const ora = require('ora')
+const spinner = ora().start()
+
+module.exports = spinner
