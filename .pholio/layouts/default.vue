@@ -12,7 +12,7 @@
 </template>
 
 <script>
-const pageOrder = ['/', '/usage'];
+const pageOrder = ['/', '/usage', '/about'];
 
 export default {
   computed: {
@@ -47,10 +47,12 @@ body {
   border-right: 1px solid #f0f0f0;
 
   & .site-title {
-    font-size: 24px;
+    font-family: fantasy;
+    font-size: 28px;
     text-align: center;
     line-height: 1.4;
     cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   & a {
