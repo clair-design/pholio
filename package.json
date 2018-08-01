@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "start": "PORT=3009 ./bin/index start",
-    "build": "PORT=3009 ./bin/index build"
+    "build-doc": "PORT=3009 ./bin/index build",
+    "build": "rm -rf docs && npm run build-doc"
   },
   "bin": "./bin/index",
   "repository": {
