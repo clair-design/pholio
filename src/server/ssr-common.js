@@ -19,8 +19,10 @@ createApp.jsonp = function (id) {
     return Promise.resolve(jsonpCache[id])
   }
 
+  const nprogress = Vue.prototype.$nprogress
   const { mode } = cachedOption
   const staticPath = mode !== 'history' ? './static' : '/static'
+  if (nprogress) nprogress.start()
   // client
   if (typeof window !== 'undefined') {
     return new Promise(resolve => {
@@ -28,6 +30,7 @@ createApp.jsonp = function (id) {
       jsonpClient(`${staticPath}/page.${id}.js`, function () {
         const page = jsonpCache[id]
         page.__hash = id
+        if (nprogress) nprogress.done()
         resolve(page)
       })
     })

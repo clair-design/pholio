@@ -36,3 +36,4 @@ $ yarn add --dev pholio # for yarn users
 
 - [remarkjs](https://github.com/remarkjs/)
 
+- [nprogress](https://github.com/rstacruz/nprogress/)

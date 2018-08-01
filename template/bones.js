@@ -1,3 +1,6 @@
+import nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 // NOTE
 // `require.context` must be treated as a whole. by
 // NO means you should split them up, as is required
@@ -12,6 +15,7 @@ const getModule = function (module) {
 
 const entry = {
   install (Vue) {
+    Vue.prototype.$nprogress = nprogress
     pluginReqs.keys().forEach(key => {
       Vue.use(getModule(pluginReqs(key)))
     })

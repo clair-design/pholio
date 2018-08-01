@@ -241,7 +241,7 @@ export default {
 ```html
 <template demo-only lang="pug">
   div
-    em 看不见源码哟！
+    em 我的底下木有看不见源码哟！
 </template>
 
 <style>
@@ -254,10 +254,9 @@ div em {
 其原始代码为 —— 
 
 ```xml
-```html
 <template demo-only lang="pug">
   div
-    em 看不见源码哟！
+    em 我的底下木有看不见源码哟！
 </template>
 
 <style>
@@ -266,6 +265,19 @@ div em {
 }
 </style>
 ```
-```
 
 3. 从上面的例子可以看出，我们在代码块也能写 `pug` 模板。同样，CSS 也能够自己指定 SCSS、Stylus 等 —— 当然，需要自行安装对应的 package。具体的支持情况，需要查询 `rollup-plugin-vue`。另外，我们是不支持 import 文件的！
+
+## 其他
+
+我们拓展了 `Vue` 对象的 prototype，添加了一个 `$nprogress` 对象。有必要的话你可以使用。（关于 [nprogress](https://github.com/rstacruz/nprogress/)）
+
+
+```html
+<button @click="$nprogress.start">
+  Start
+</button>
+<button @click="$nprogress.done">
+  Done
+</button>
+```
