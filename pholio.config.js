@@ -7,6 +7,9 @@ module.exports = {
   // fallback page, usually a 404 page or error page
   errorRedirect: '/error',
 
+  // for vue-router
+  routerMode: 'hash',
+
   // md2vue configuration
   md2vue: {
     highlight: 'highlight.js',

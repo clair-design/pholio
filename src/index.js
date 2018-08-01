@@ -131,6 +131,7 @@ module.exports = function main (config) {
     const [infra, { payload: flesh }] = data
     const [bones, vendor] = infra
 
+    const routerMode = config.routerMode || 'history'
     const pages = [...flesh.values()]
     const navInfo = pages.map(page => {
       return {
@@ -145,7 +146,7 @@ module.exports = function main (config) {
     const option = {
       pages,
       navInfo,
-      routerMode: 'history',
+      routerMode,
       errorRedirect: config.errorRedirect || '/'
     }
 
@@ -182,7 +183,9 @@ module.exports = function main (config) {
       const request = require('request-promise')
 
       const resources = [
-        ...pages.map(page => page.fullPath),
+        ...(
+          routerMode === 'history' ? pages.map(page => page.fullPath) : '/'
+        ),
         ...pages.map(page => `/static/page.${page.hash}.js`),
         `/static/vendor.${vendor.hash}.js`,
         `/static/framework.${bones.script.hash}.js`,
