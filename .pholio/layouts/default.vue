@@ -44,10 +44,6 @@ body {
 
 .navbar {
   box-sizing: border-box;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  width: 200px;
   border-right: 1px solid #f0f0f0;
 
   & .site-title {
@@ -62,7 +58,15 @@ body {
   }
 }
 
-.main {
-  margin-left: 200px;
+@media screen and (min-width: 720px) {
+  .navbar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 200px;
+  }
+  .main {
+    margin-left: 200px;
+  }
 }
 </style>
