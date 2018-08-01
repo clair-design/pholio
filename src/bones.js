@@ -3,7 +3,7 @@ const { from, BehaviorSubject } = require('rxjs')
 const { skip } = require('rxjs/operators')
 
 const cili = require('./util/cili')
-const renderFile = require('./util/render-file')
+const renderFile = require('./util/renderFile')
 const kTemplate = resolve(__dirname, '../template/bones.js')
 
 module.exports = function ({ pluginDirectory, layoutDirectory }) {

@@ -11,11 +11,11 @@ var routes = [
     }
   },
 <% }); %>
-  { path: "*", redirect: "/error" }
+  { path: "*", redirect: "<%- errorRedirect %>" }
 ];
 
 createApp.use({
-  install (Vue) {
+  install: function (Vue) {
     Vue.prototype.$pages = <%- JSON.stringify(navInfo) %>
   }
 })

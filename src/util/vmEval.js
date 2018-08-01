@@ -20,7 +20,6 @@ module.exports = code => {
     runInNewContext(code, sandBox)
     return sandBox.module.exports
   } catch (e) {
-    console.log(code)
     console.error(e)
   }
 }

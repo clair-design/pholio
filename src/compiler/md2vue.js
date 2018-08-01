@@ -1,6 +1,6 @@
 const md2vue = require('./markdown')
 const LRU = require('../util/lru')
-const readCachedFile = require('../util/read-cache')
+const readCachedFile = require('../util/readCache')
 const assign = Object.assign
 
 let kCache = null

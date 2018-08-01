@@ -26,6 +26,15 @@ const entry = {
       }
       Vue.component(`layout-${name}`, module)
     })
+
+    // fallback
+    if (!Vue.component('layout-default')) {
+      Vue.component('layout-default', {
+        render (h) {
+          return h('router-view')
+        }
+      })
+    }
   }
 }
 

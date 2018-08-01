@@ -8,7 +8,7 @@ var routes = [
     }
   },
 <% }); %>
-  { path: "*", redirect: "/error" }
+{ path: "*", redirect: "<%- errorRedirect %>" }
 ];
 
 module.exports = {

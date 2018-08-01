@@ -4,7 +4,7 @@
 const { resolve } = require('path')
 const LRU = require('lru-cache')
 const { exists, ensureFile, readFile, writeFile } = require('fs-extra')
-const getCacheDir = require('./get-cache-dir')
+const getCacheDir = require('./getCacheDir')
 
 module.exports = async (filename, option) => {
   const cacheDir = getCacheDir()

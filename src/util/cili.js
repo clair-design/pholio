@@ -1,11 +1,11 @@
-const { resolve } = require('path')
+const { resolve, join } = require('path')
 const Cili = require('cili')
 const hashSum = require('hash-sum')
 const { BehaviorSubject, Observable } = require('rxjs')
 const { skip } = require('rxjs/operators')
 
-const getCacheDir = require('./get-cache-dir')
-const pluginMemory = require('./rollup-plugin')
+const getCacheDir = require('./getCacheDir')
+const pluginMemory = require('./rollupPluginMemory')
 let uid = 0
 
 module.exports = function ({
@@ -16,9 +16,10 @@ module.exports = function ({
   format = 'iife',
   extractCSS = false
 }) {
+  const env = process.env.NODE_ENV || 'development'
   const prefix = process.env.NPM_PREFIX || process.cwd()
   const subject = new BehaviorSubject(null)
-  const filename = `${process.pid}26${uid++}.js`
+  const filename = `${env}_${uid++}.js`
 
   const option = {
     input,
@@ -26,7 +27,7 @@ module.exports = function ({
     watch,
     moduleName,
     cwd: prefix,
-    outDir: getCacheDir(),
+    outDir: join(getCacheDir(), 'temp'),
     target: 'browser',
     js: 'babel',
     babel: { babelrc: false },

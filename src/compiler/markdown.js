@@ -1,13 +1,15 @@
 const { resolve, relative } = require('path')
+
+const md2vue = require('md2vue')
+const { loadFront } = require('yaml-front-matter')
+const { readFile, existsSync } = require('fs-extra')
+
 const toSlug = require('limax')
 const visit = require('unist-util-visit')
 const toString = require('mdast-util-to-string')
 const normalizeHeadings = require('remark-normalize-headings')
 
-const md2vue = require('md2vue')
-const { loadFront } = require('yaml-front-matter')
-const { readFile, existsSync } = require('fs-extra')
-const pascalCase = require('../util/pascal-case')
+const pascalCase = require('../util/pascalCase')
 
 const RE_REMOVE = /window\.Vue && Vue\.use\(component\);\s*$/
 const userConfig = loadConfig()
@@ -19,19 +21,14 @@ module.exports = async (file, content) => {
     content = await readFile(file, 'utf-8')
   }
 
-  const {
-    title,
-    layout,
-    route,
-    meta,
-    vars,
-    markdown,
-    highlight = 'prism'
-  } = loadFront(content.trim(), 'markdown')
+  const { title, layout, route, meta, vars, markdown, highlight } = loadFront(
+    content.trim(),
+    'markdown'
+  )
 
   const _route = route.replace(/^\//, '')
   const arr = _route.split('/')
-  const isMain = arr[0] === 'index' && !arr[1]
+  const isMain = _route === '' || (arr[0] === 'index' && !arr[1])
   const fullPath = isMain ? '/' : `/${_route}`
 
   const config = Object.assign({ name }, userConfig)
@@ -76,6 +73,10 @@ return module.exports
 })()`
 
   return { title, layout, fullPath, pageNav, content: code }
+}
+
+module.exports.config = config => {
+  Object.assign(userConfig, config)
 }
 
 function loadConfig () {

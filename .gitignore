@@ -61,4 +61,4 @@ site/
 dist/
 .cache/
 lib/
-example
+.site

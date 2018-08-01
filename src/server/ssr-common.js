@@ -1,7 +1,6 @@
 const Vue = require('vue')
 const VueMeta = require('vue-meta')
 const VueRouter = require('vue-router')
-const fetchJSONP = require('fetch-jsonp')
 const objectAssign = require('lodash/assign')
 Object.assign = objectAssign
 
@@ -22,14 +21,14 @@ createApp.jsonp = function (id) {
 
   // client
   if (typeof window !== 'undefined') {
-    return fetchJSONP(`/static/page.${id}.js`, {
-      jsonpCallbackFunction: '__jsonpResolve'
-    })
-      .then(r => r.json())
-      .then(page => {
+    return new Promise(resolve => {
+      window.__jsonpResolve = module => (jsonpCache[id] = module)
+      jsonpClient(`/static/page.${id}.js`, function () {
+        const page = jsonpCache[id]
         page.__hash = id
-        return (jsonpCache[id] = page)
+        resolve(page)
       })
+    })
   }
 
   return Promise.resolve(null)
@@ -46,14 +45,16 @@ function createApp (option) {
   const router = new VueRouter({
     mode: mode || 'hash',
     routes,
-    scrollBehavior: () => ({ x: 0, y: 0 })
-  })
-
-  Object.defineProperty(Vue.prototype, '$pageTOC', {
-    get () {
-      const path = router.currentRoute.path
-      const match = Vue.prototype.$pages.filter(page => page.path === path)
-      return match[0] ? match[0].TOC : []
+    scrollBehavior: (to, from, saved) => {
+      if (saved) {
+        return saved
+      } else if (to.hash) {
+        return {
+          selector: to.hash
+        }
+      } else {
+        return { x: 0, y: 0 }
+      }
     }
   })
 
@@ -66,6 +67,34 @@ function createApp (option) {
   router.onReady(() => app.$mount('#root'))
   cachedOption = objectAssign(option, { app, router })
   return { app, router }
+}
+
+function jsonpClient (url, callback) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const script = document.createElement('script')
+  const head = document.getElementsByTagName('head')[0]
+  let done = false
+  script.src = url
+  script.async = true
+  head.appendChild(script)
+  script.onload = script.onreadystatechange = function () {
+    if (done) {
+      return
+    }
+    const state = this.readyState
+
+    if (!state || (state === 'loaded' || state === 'complete')) {
+      done = true
+      script.onload = script.onreadystatechange = null
+      if (script && script.parentNode) {
+        script.parentNode.removeChild(script)
+      }
+      callback()
+    }
+  }
 }
 
 let applyReload = null

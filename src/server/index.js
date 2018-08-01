@@ -4,8 +4,8 @@ const SSE = require('express-sse')
 const UglifyJS = require('uglify-js')
 const { createRenderer } = require('vue-server-renderer')
 const createApp = require('./ssr-common')
-const renderFile = require('../util/render-file')
-const evalByVM = require('../util/vm-eval')
+const renderFile = require('../util/renderFile')
+const evalByVM = require('../util/vmEval')
 const logger = require('../util/logger')
 const kTemplate = resolve(__dirname, '../../template/ssr.template.html.ejs')
 const renderHTML = data => renderFile(kTemplate, data)
@@ -18,7 +18,16 @@ let isListening = false
 const renderer = createRenderer({ template: '<!--vue-ssr-outlet-->' })
 
 module.exports = {
-  config ({ navInfo, vendor, bones, flesh, manifest, pages, staticDirectory }) {
+  config ({
+    staticDirectory,
+    navInfo,
+    vendor,
+    bones,
+    flesh,
+    manifest,
+    pages,
+    externals
+  }) {
     const framework = evalByVM(bones.script.content)
     flesh.exports = evalByVM(flesh.content)
     flesh.exports.framework = framework
@@ -28,6 +37,7 @@ module.exports = {
       bones, // plugins and layouts
       pages, // each markdown page
       manifest, // manifest for browsers
+      externals,
       staticDirectory,
       // flesh & bones are bundled toggether in ssr
       // no code splitting...
@@ -49,10 +59,13 @@ module.exports = {
 
   start () {
     if (isListening === false) {
+      const PORT = process.env.PORT || 3000
       this.setRoutes()
-      server.listen(1126)
+      server.listen(PORT)
       isListening = true
-      logger.info('Server listening on port: 1126')
+      if (process.env.NODE_ENV !== 'production') {
+        logger.info(`Server listening on port: ${PORT}.`)
+      }
     } else {
       // send signal...
       logger.info('Server updates...')
@@ -133,11 +146,8 @@ module.exports = {
             manifest: this.manifest.hash,
             stylesheet: styles ? styles.hash : ''
           },
-          externals: {
-            js: ['<script src="https://lib.baomitu.com/notie/4.3.1/notie.min.js"></script>'],
-            css: ['<link href="https://lib.baomitu.com/notie/4.3.1/notie.min.css" rel="stylesheet">']
-          },
-          serviceWorker: false,
+          externals: this.externals,
+          serviceWorker: process.env.NODE_ENV === 'production',
           ssrContent: result
         })
         res.end(html)
