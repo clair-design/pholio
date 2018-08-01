@@ -12,7 +12,7 @@
 </template>
 
 <script>
-const pageOrder = ['/', '/about', '/error'];
+const pageOrder = ['/', '/usage'];
 
 export default {
   computed: {
@@ -55,6 +55,10 @@ body {
     text-align: center;
     line-height: 1.4;
     cursor: pointer;
+  }
+
+  & a {
+    color: #444;
   }
 }
 
