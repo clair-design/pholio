@@ -18,7 +18,7 @@
   <%- noscript.text() %>
   <div id="root"><%- ssrContent %></div>
   <%- externals.js %>
-  <% script.text({ body: true }) %>
+  <%- script.text({ body: true }) %>
   <script src="/static/vendor.<%= hash.vendor %>.js"></script>
   <script src="/static/framework.<%= hash.framework %>.js"></script>
   <script src="/static/manifest.<%= hash.manifest %>.js"></script>
