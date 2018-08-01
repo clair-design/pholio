@@ -53,7 +53,11 @@ module.exports = async (file, content) => {
   /**
    * inject metaInfo
    */
-  Object.assign(extend.metaInfo, meta, { title })
+  extend.metaInfo = Object.assign({}, extend.metaInfo, meta, { title })
+
+  // eslint-disable-next-line no-new-func
+  extend.metaInfo = new Function(`return ${JSON.stringify(extend.metaInfo)}`)
+
   /**
    * inject variables to markdown page
    */
