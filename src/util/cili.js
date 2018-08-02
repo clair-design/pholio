@@ -30,6 +30,7 @@ module.exports = function ({
     outDir: join(getCacheDir(), 'temp'),
     target: 'browser',
     js: 'babel',
+    jsx: 'vue',
     babel: { babelrc: false },
     plugin: ['require-context', 'vue'],
     format: compress ? `${format}-min` : format,
