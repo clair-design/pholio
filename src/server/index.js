@@ -3,12 +3,17 @@ const express = require('express')
 const SSE = require('express-sse')
 const UglifyJS = require('uglify-js')
 const { createRenderer } = require('vue-server-renderer')
-const createApp = require('./ssr-common')
-const renderFile = require('../util/renderFile')
-const evalByVM = require('../util/vmEval')
+
 const logger = require('../util/logger')
+const createApp = require('./ssr-common')
+const evalByVM = require('../util/vmEval')
+const renderFile = require('../util/renderFile')
+
 const kSSRTemplate = resolve(__dirname, '../../template/ssr.template.html.ejs')
-const kHashTemplate = resolve(__dirname, '../../template/hash.template.html.ejs')
+const kHashTemplate = resolve(
+  __dirname,
+  '../../template/hash.template.html.ejs'
+)
 const renderSSRTempl = data => renderFile(kSSRTemplate, data)
 const renderHashTempl = data => renderFile(kHashTemplate, data)
 

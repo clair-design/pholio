@@ -72,7 +72,6 @@ module.exports = {
   errorRedirect: '/404',
 
   // for vue-router: hash or history
-  // 注意 hash 模式下不会生成 service-worker
   routerMode: 'hash',
 
   // md2vue 配置

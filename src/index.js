@@ -53,8 +53,8 @@ const getFleshStream = patterns => {
  * main logics
  */
 // npm-prefix: project root/base dir
-process.env.NPM_PREFIX = process.env.NPM_PREFIX ||
-  require('execa').shellSync('npm prefix').stdout
+process.env.NPM_PREFIX =
+  process.env.NPM_PREFIX || require('execa').shellSync('npm prefix').stdout
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -184,9 +184,7 @@ module.exports = function main (config) {
       const request = require('request-promise')
 
       const resources = [
-        ...(
-          routerMode !== 'hash' ? pages.map(page => page.fullPath) : '/'
-        ),
+        ...(routerMode !== 'hash' ? pages.map(page => page.fullPath) : '/'),
         ...pages.map(page => `/static/page.${page.hash}.js`),
         `/static/vendor.${vendor.hash}.js`,
         `/static/framework.${bones.script.hash}.js`,
@@ -210,22 +208,18 @@ module.exports = function main (config) {
       await copy(staticDirectory, join(dest, 'static'))
       logger.succeed('SSR Done.')
 
-      if (routerMode !== 'hash') {
-        const params = {
-          staticFileGlobs: [
-            `${dest}/static/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}`
-          ],
-          stripPrefix: dest.replace(/\\/g, '/'),
-          logger: data => logger.succeed(data)
-        }
-        require('sw-precache').write(
-          `${dest}/service-worker.js`,
-          params,
-          () => process.exit(0)
-        )
-      } else {
-        process.exit(0)
+      const stripPrefix =
+        dest.replace(/\\/g, '/') + (routerMode !== 'hash' ? '' : '/')
+      const params = {
+        stripPrefix,
+        staticFileGlobs: [
+          `${dest}/static/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}`
+        ],
+        logger: data => logger.succeed(data)
       }
+      require('sw-precache').write(`${dest}/service-worker.js`, params, () =>
+        process.exit(0)
+      )
     }
   })
 }
@@ -236,7 +230,7 @@ module.exports.clean = () => {
   logger.stop()
 }
 
-process.on('uncaughtException', (e) => {
+process.on('uncaughtException', e => {
   logger.fail('Uncaught exception:')
   console.error(e)
 })

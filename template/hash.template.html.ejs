@@ -10,6 +10,7 @@
   <% if (hash.stylesheet) { %>
   <link rel="stylesheet" href="./static/styles.<%= hash.stylesheet %>.css" />
   <% } %>
+  <% if (serviceWorker) { %> <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./service-worker.js') }</script><% } %>
 </head>
 
 <body>
