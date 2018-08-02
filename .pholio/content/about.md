@@ -6,6 +6,8 @@ layout: default
 
 # 关于 pholio
 
+<github-badge />
+
 来源于三个项目：
 
 - [Clair](https://github.com/clair-design/clair) —— 需求驱动方

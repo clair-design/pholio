@@ -6,6 +6,8 @@ layout: default
 
 # Pholio
 
+<github-badge />
+
 > 使用 Markdown 展示可使用、可交互的 Vue 组件
 
 &nbsp;

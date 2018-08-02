@@ -3,6 +3,16 @@ import 'highlight.js/styles/github-gist.css'
 import '../styles/theme.css'
 import '../styles/index.css'
 
+function badge(h) {
+  return (
+    <a href="https://github.com/clair-design/pholio" target="_blank">
+      <img src="https://img.shields.io/badge/github-view--pholio--repo-green.svg?longCache=true&style=flat" />
+    </a>
+  )
+}
+
 export default {
-  install (Vue) {}
+  install (Vue) {
+    Vue.component('github-badge', { render: badge })
+  }
 }
