@@ -199,7 +199,7 @@ meta:
 
 通过 `$page` 可以拿到当前文档的基本配置信息（title、layout、route）。当前文档`$page`内容如下 ——
 
-<pre>
+<pre style="max-height: 200px;">
 {{ JSON.stringify($page, null, 2) }}
 </pre>
 
