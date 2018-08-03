@@ -6,7 +6,7 @@ import '../styles/index.css'
 function badge(h) {
   return (
     <a href="https://github.com/clair-design/pholio" target="_blank">
-      <img src="https://img.shields.io/badge/github-view--pholio--repo-green.svg?longCache=true&style=flat" />
+      <img src="https://img.shields.io/badge/github-pholio-green.svg?longCache=true&style=flat" />
     </a>
   )
 }

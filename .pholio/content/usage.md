@@ -2,6 +2,7 @@
 title: '使用 pholio'
 route: /usage
 layout: default
+index: 2
 meta:
   script:
     - innerHTML: console.log('Hello world.')

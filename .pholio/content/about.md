@@ -2,6 +2,7 @@
 title: About
 route: /about
 layout: default
+index: 3
 ---
 
 # 关于 pholio

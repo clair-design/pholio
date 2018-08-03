@@ -2,6 +2,7 @@
 title: 首页
 route: /
 layout: default
+index: 1
 ---
 
 # Pholio

@@ -12,7 +12,6 @@
 </template>
 
 <script>
-const pageOrder = ['/', '/usage', '/about'];
 
 export default {
   computed: {
@@ -22,11 +21,9 @@ export default {
     },
   },
   created() {
-    const map = this.$pages.reduce((acc, page) => {
-      acc[page.path] = page;
-      return acc;
-    }, {});
-    this.pages = pageOrder.map(path => map[path]);
+    this.pages = this.$pages
+      .filter(page => page.index > 0)
+      .sort((a, b) => +a.index - b.index)
   },
 };
 </script>
