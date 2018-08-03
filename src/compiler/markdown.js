@@ -21,7 +21,7 @@ module.exports = async (file, content) => {
     content = await readFile(file, 'utf-8')
   }
 
-  const { title, layout, route, meta, vars, markdown, highlight } = loadFront(
+  const { title, layout, route, meta, vars, markdown, highlight, ...rest } = loadFront(
     content.trim(),
     'markdown'
   )
@@ -61,11 +61,17 @@ module.exports = async (file, content) => {
   /**
    * inject variables to markdown page
    */
+
   extend.computed = {
     // eslint-disable-next-line no-new-func
     $vars: new Function(`return ${JSON.stringify(vars || {})}`),
-    // eslint-disable-next-line no-new-func
-    $page: new Function(`return ${JSON.stringify({ title, route, layout })}`)
+    $page: function () {
+      var currentPath = this.$route.path
+      var matched = this.$pages.filter(function (info) {
+        return info.path === currentPath
+      })
+      return matched[0] || {}
+    }
   }
 
   // HACK
@@ -81,7 +87,7 @@ ${compiled.replace(RE_REMOVE, 'false')}
 return module.exports
 })()`
 
-  return { title, layout, fullPath, pageNav, content: code }
+  return { title, layout, fullPath, pageNav, content: code, rest }
 }
 
 module.exports.config = config => {

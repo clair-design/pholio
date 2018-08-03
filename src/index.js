@@ -135,6 +135,7 @@ module.exports = function main (config) {
     const pages = [...flesh.values()]
     const navInfo = pages.map(page => {
       return {
+        ...page.rest,
         title: page.title,
         path: page.fullPath,
         layout: page.layout,
