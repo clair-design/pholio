@@ -34,7 +34,7 @@
     "limax": "^1.6.0",
     "lodash": "^4.17.10",
     "lru-cache": "^4.1.3",
-    "md2vue": "^4.0.0-alpha.8",
+    "md2vue": "^4.0.0-beta.1",
     "mdast-util-to-string": "^1.0.4",
     "nprogress": "^0.2.0",
     "ora": "^3.0.0",

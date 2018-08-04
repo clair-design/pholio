@@ -3433,9 +3433,9 @@ math-random@^1.0.1:
   version "1.0.1"
   resolved "http://r.cnpmjs.org/math-random/download/math-random-1.0.1.tgz#8b3aac588b8a66e4975e3cdea67f7bb329601fac"
 
-md2vue@^4.0.0-alpha.8:
-  version "4.0.0-alpha.8"
-  resolved "http://r.cnpmjs.org/md2vue/download/md2vue-4.0.0-alpha.8.tgz#4ea3c3c1cb9a90e925bc02f9e246a7b070401efb"
+md2vue@4.0.0-beta.1:
+  version "4.0.0-beta.1"
+  resolved "https://registry.npmjs.org/md2vue/-/md2vue-4.0.0-beta.1.tgz#87d9c1db4ca1b05bcdc2f70591dcac20f4d464bf"
   dependencies:
     buble "^0.15.2"
     highlight.js "^9.12.0"
