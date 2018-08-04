@@ -1,5 +1,5 @@
+/* eslint-disable no-new-func */
 const { resolve, relative } = require('path')
-
 const md2vue = require('md2vue')
 const { loadFront } = require('yaml-front-matter')
 const { readFile, existsSync } = require('fs-extra')
@@ -7,6 +7,9 @@ const { readFile, existsSync } = require('fs-extra')
 const toSlug = require('limax')
 const visit = require('unist-util-visit')
 const toString = require('mdast-util-to-string')
+const math = require('remark-math')
+const katex = require('remark-html-katex')
+const externalLinks = require('remark-external-links')
 const normalizeHeadings = require('remark-normalize-headings')
 
 const pascalCase = require('../util/pascalCase')
@@ -31,7 +34,7 @@ module.exports = async (file, content) => {
   const isMain = _route === '' || (arr[0] === 'index' && !arr[1])
   const fullPath = isMain ? '/' : `/${_route}`
 
-  const config = Object.assign({ name }, userConfig)
+  const config = { name, ...userConfig }
 
   /**
    * highlight config in page level
@@ -44,26 +47,25 @@ module.exports = async (file, content) => {
    * remarkPlugins
    */
   const pageNav = []
-  config.remarkPlugins = [
+  const { remarkPlugins = [] } = config
+  config.remarkPlugins = remarkPlugins.concat([
+    math,
+    katex,
+    externalLinks.default || externalLinks,
     normalizeHeadings,
     slugify(arr => pageNav.push(...arr))
-  ]
+  ])
 
-  const { extend } = config
-  /**
-   * inject metaInfo
-   */
-  extend.metaInfo = Object.assign({}, extend.metaInfo, meta, { title })
-
-  // eslint-disable-next-line no-new-func
-  extend.metaInfo = new Function(`return ${JSON.stringify(extend.metaInfo)}`)
-
-  /**
-   * inject variables to markdown page
-   */
-
+  const extend = { ...config.extend }
+  const metaInfo = {
+    ...extend.metaInfo,
+    ...meta,
+    title
+  }
+  // inject metaInfo
+  extend.metaInfo = new Function(`return ${JSON.stringify(metaInfo)}`)
+  // inject variables to markdown page
   extend.computed = {
-    // eslint-disable-next-line no-new-func
     $vars: new Function(`return ${JSON.stringify(vars || {})}`),
     $page: function () {
       var currentPath = this.$route.path
@@ -73,6 +75,7 @@ module.exports = async (file, content) => {
       return matched[0] || {}
     }
   }
+  config.extend = extend
 
   // HACK
   const vueEnv = process.env.VUE_ENV
