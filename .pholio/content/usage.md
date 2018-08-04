@@ -4,6 +4,9 @@ route: /usage
 layout: default
 index: 2
 meta:
+  link:
+    - rel: 'stylesheet'
+      href: https://lib.baomitu.com/KaTeX/0.9.0/katex.min.css
   script:
     - innerHTML: console.log('Hello world.')
       body: true
@@ -25,20 +28,20 @@ vars:
 
 1. 指定在 3001 端口启动 devServer:
 
-```shell
+```bash
 $ PORT=3001 pholio start
 ```
 
 2. 构建，生成静态文件到磁盘
 
-```shell
+```bash
 # 默认使用 3000 端口
 $ pholio build
 ```
 
 3. 清理缓存文件夹
 
-```shell
+```bash
 $ pholio clean
 ```
 
@@ -48,7 +51,7 @@ $ pholio clean
 
 该文件夹由以下几个子目录构成：
 
-```shell
+```bash
 pholio
 ├── content  # 可用于存放 Markdown 文件
 ├── layouts  # 存放用作布局 `.vue` 文件
@@ -142,6 +145,7 @@ export default {
 
 1. 根据你选择的代码高亮主题（highlight.js 或 prism），引入或编写相应的样式
 2. 引用或编写 Markdown 样式（如 github-markdown-theme 之类）
+3. 如果使用了 `TeX`，请自行引入 [katex](https://khan.github.io/KaTeX) 相关的 CSS 样式
 3. 布局样式及其他自定义样式
 
 建议使用 PostCSS 编写。项目中 PostCSS 配置文件（`postcss.config.js`等），将自动应用到布局文件以及其他通过 JavaScript 引入的 CSS 文件上来。
@@ -314,6 +318,21 @@ div em {
 ```
 
 3. 从上面的例子可以看出，我们在代码块也能写 `pug` 模板。同样，CSS 也能够自己指定 SCSS、Stylus 等 —— 当然，需要自行安装对应的 package。具体的支持情况，需要查询 `rollup-plugin-vue`。
+
+
+## 支持 TeX
+
+我们使用 [remark-math](https://github.com/rokt33r/remark-math) 解析 TeX 内容，其底层是 [KaTeX](https://khan.github.io/KaTeX/)。
+
+示例：$E = mc^2$
+
+如果你在文档中使用到了 TeX，请**自行引入** katex 样式文件。建议使用第三方 CDN。如 ——
+
+```xml
+https://lib.baomitu.com/KaTeX/0.9.0/katex.min.css
+# 或者
+https://unpkg.com/katex@0.9.0/dist/katex.min.css
+```
 
 ## 其他
 
