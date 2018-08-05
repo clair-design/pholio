@@ -10,10 +10,8 @@ module.exports = {
   // for vue-router
   routerMode: 'hash',
 
-  // md2vue configuration
   md2vue: {
-    highlight: 'highlight.js',
-    inject: ''
+    gistInjection: ''
   },
 
   // external links

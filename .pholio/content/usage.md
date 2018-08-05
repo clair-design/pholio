@@ -78,12 +78,6 @@ module.exports = {
   // for vue-router: hash or history
   routerMode: 'hash',
 
-  // md2vue 配置
-  md2vue: {
-    highlight: 'highlight.js', // 配置代码高亮工具
-    inject: '' // markdown 中运行的各个 Vue 实例与源码之间可以插入一些自定义内容
-  },
-
   // 外部资源 通常是单独引入的 CSS/JavaScript
   externals: [
     'https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css'
@@ -143,7 +137,7 @@ export default {
 
 你大概需要以下几样样式：
 
-1. 根据你选择的代码高亮主题（highlight.js 或 prism），引入或编写相应的样式
+1. 根据你选择的代码高亮主题（highlight.js），引入或编写相应的样式
 2. 引用或编写 Markdown 样式（如 github-markdown-theme 之类）
 3. 如果使用了 `TeX`，请自行引入 [katex](https://khan.github.io/KaTeX) 相关的 CSS 样式
 3. 布局样式及其他自定义样式
@@ -223,10 +217,10 @@ vars:
 
 在 Markdown 文档中，通过 `$vars` 来获取数据。示例如下 ——
 
-```xml
+```
 <!-- 代码 -->
 <em v-for="country in $vars.threeKingdoms" :key="country">
-  {{country}}
+  {{ country }}
 </em>
 ```
 
@@ -324,7 +318,11 @@ div em {
 
 我们使用 [remark-math](https://github.com/rokt33r/remark-math) 解析 TeX 内容，其底层是 [KaTeX](https://khan.github.io/KaTeX/)。
 
-示例：$E = mc^2$
+示例：
+
+$$
+\displaystyle 1 +  \frac{q^2}{(1-q)}+\frac{q^6}{(1-q)(1-q^2)}+\cdots = \prod_{j=0}^{\infty}\frac{1}{(1-q^{5j+2})(1-q^{5j+3})}, \quad\quad \text{for }\lvert q\rvert<1.
+$$
 
 如果你在文档中使用到了 TeX，请**自行引入** katex 样式文件。建议使用第三方 CDN。如 ——
 
@@ -351,3 +349,5 @@ https://unpkg.com/katex@0.9.0/dist/katex.min.css
 2. 开发模式下支持有限度的“热更新”。因为使用的是 rollup 这一套，其实很难做到像 webpack 那种程度的 hot reload。目前只能根据利用 Vue 和 VueRouter 的一些特性来刷新组件（粒度只能做到页面级），稍微减轻 live reload 的痛苦。
 
 3. 目录下 `.cache` 文件用于存放一些缓存。建议添加到 `.gitignore` 中。另外，当你修改了 `pholio.config.js`之后，建议删除 `.cache` 文件之后再运行相关命令。
+
+4. 编写 markdown 中，可以使用一些自定义属性。建议阅读 [remark-attr](https://github.com/arobase-che/remark-attr) 文档。

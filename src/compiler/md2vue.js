@@ -22,7 +22,7 @@ module.exports = async file => {
       throw result
     }
 
-    const { hash, content } = result
+    const { hash } = result
     const cached = kCache.get(hash)
 
     // HIT
@@ -30,7 +30,7 @@ module.exports = async file => {
       return cached
     }
 
-    const ret = await md2vue(file, content)
+    const ret = await md2vue(file)
     const data = assign({ hash }, ret)
     const expires = Date.now() + 30 * 60 * 1000
 
