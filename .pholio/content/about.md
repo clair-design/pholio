@@ -7,7 +7,7 @@ index: 3
 
 # 关于 pholio
 
-<github-badge />
+<github-badge></github-badge>
 
 来源于三个项目：
 
