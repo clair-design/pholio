@@ -1076,6 +1076,19 @@ buble@^0.19.2:
     os-homedir "^1.0.1"
     vlq "^1.0.0"
 
+buble@^0.19.3:
+  version "0.19.3"
+  resolved "https://registry.npmjs.org/buble/-/buble-0.19.3.tgz#01e9412062cff1da6f20342b6ecd72e7bf699d02"
+  dependencies:
+    acorn "^5.4.1"
+    acorn-dynamic-import "^3.0.0"
+    acorn-jsx "^4.1.1"
+    chalk "^2.3.1"
+    magic-string "^0.22.4"
+    minimist "^1.2.0"
+    os-homedir "^1.0.1"
+    vlq "^1.0.0"
+
 builtin-modules@^1.0.0:
   version "1.1.1"
   resolved "http://r.cnpmjs.org/builtin-modules/download/builtin-modules-1.1.1.tgz#270f076c5a72c02f5b65a47df94c5fe3a278892f"
@@ -1083,10 +1096,6 @@ builtin-modules@^1.0.0:
 builtin-modules@^2.0.0:
   version "2.0.0"
   resolved "http://r.cnpmjs.org/builtin-modules/download/builtin-modules-2.0.0.tgz#60b7ef5ae6546bd7deefa74b08b62a43a232648e"
-
-bulk-replace@0.0.1:
-  version "0.0.1"
-  resolved "http://r.cnpmjs.org/bulk-replace/download/bulk-replace-0.0.1.tgz#f095682a896abd4b3d9e08de409cc222e213f9dd"
 
 bytes@3.0.0, bytes@^3.0.0:
   version "3.0.0"
@@ -1463,12 +1472,6 @@ comma-separated-tokens@^1.0.0, comma-separated-tokens@^1.0.1, comma-separated-to
 commander@2.16.x, commander@~2.16.0:
   version "2.16.0"
   resolved "http://r.cnpmjs.org/commander/download/commander-2.16.0.tgz#f16390593996ceb4f3eeb020b31d78528f7f8a50"
-
-commander@~1.1.1:
-  version "1.1.1"
-  resolved "http://r.cnpmjs.org/commander/download/commander-1.1.1.tgz#50d1651868ae60eccff0a2d9f34595376bc6b041"
-  dependencies:
-    keypress "0.1.x"
 
 commander@~2.13.0:
   version "2.13.0"
@@ -2682,12 +2685,6 @@ he@1.1.x, he@^1.1.0:
   version "1.1.1"
   resolved "http://r.cnpmjs.org/he/download/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
 
-hepburn@^1.0.0:
-  version "1.0.0"
-  resolved "http://r.cnpmjs.org/hepburn/download/hepburn-1.0.0.tgz#49ce862942a77570cd4f5c8fe100b85d942cb61b"
-  dependencies:
-    bulk-replace "0.0.1"
-
 highlight.js@^9.12.0, highlight.js@~9.12.0:
   version "9.12.0"
   resolved "http://r.cnpmjs.org/highlight.js/download/highlight.js-9.12.0.tgz#e6d9dbe57cbefe60751f02af336195870c90c01e"
@@ -3283,10 +3280,6 @@ katex@^0.9.0:
   dependencies:
     match-at "^0.1.1"
 
-keypress@0.1.x:
-  version "0.1.0"
-  resolved "http://r.cnpmjs.org/keypress/download/keypress-0.1.0.tgz#4a3188d4291b66b4f65edb99f806aa9ae293592a"
-
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
   resolved "http://r.cnpmjs.org/kind-of/download/kind-of-3.2.2.tgz#31ea21a734bab9bbb0f32466d893aea51e4a3c64"
@@ -3339,14 +3332,6 @@ less@^2.7.2:
     promise "^7.1.1"
     request "2.81.0"
     source-map "^0.5.3"
-
-limax@^1.6.0:
-  version "1.6.0"
-  resolved "http://r.cnpmjs.org/limax/download/limax-1.6.0.tgz#996163291c7e8c6e7dd5b438c0190b69622f1b33"
-  dependencies:
-    hepburn "^1.0.0"
-    pinyin "^2.8.3"
-    speakingurl "^14.0.1"
 
 load-json-file@^1.0.0:
   version "1.1.0"
@@ -3550,7 +3535,7 @@ md-attr-parser@^1.1.5:
   version "1.1.5"
   resolved "http://registry.npm.taobao.org/md-attr-parser/download/md-attr-parser-1.1.5.tgz#67a2c3c6836bf06ec517181b74c809194deb1f3e"
 
-md2vue@5.0.0-alpha.2:
+md2vue@^5.0.0-alpha.2:
   version "5.0.0-alpha.2"
   resolved "https://registry.npmjs.org/md2vue/-/md2vue-5.0.0-alpha.2.tgz#173c0b276f603ceeb293ffa7f674570101b7d012"
   dependencies:
@@ -3777,7 +3762,7 @@ ms@2.0.0:
   version "2.0.0"
   resolved "http://r.cnpmjs.org/ms/download/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
-nan@^2.10.0, nan@^2.9.2, nan@~2.10.0:
+nan@^2.10.0, nan@^2.9.2:
   version "2.10.0"
   resolved "http://r.cnpmjs.org/nan/download/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
 
@@ -3874,12 +3859,6 @@ node-sass@^4.5.0:
     sass-graph "^2.2.4"
     stdout-stream "^1.4.0"
     "true-case-path" "^1.0.2"
-
-nodejieba@^2.2.1:
-  version "2.2.6"
-  resolved "http://r.cnpmjs.org/nodejieba/download/nodejieba-2.2.6.tgz#17cd416705b7b01c062e6cd9d7179b30453eb4a3"
-  dependencies:
-    nan "~2.10.0"
 
 nodent-compiler@^3.2.4:
   version "3.2.9"
@@ -4280,15 +4259,6 @@ pinkie-promise@^2.0.0:
 pinkie@^2.0.0:
   version "2.0.4"
   resolved "http://r.cnpmjs.org/pinkie/download/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
-
-pinyin@^2.8.3:
-  version "2.8.3"
-  resolved "http://r.cnpmjs.org/pinyin/download/pinyin-2.8.3.tgz#301ccb4358ccfe802523c4bd640a612bee4d7c4b"
-  dependencies:
-    commander "~1.1.1"
-    object-assign "^4.0.1"
-  optionalDependencies:
-    nodejieba "^2.2.1"
 
 posix-character-classes@^0.1.0:
   version "0.1.1"
@@ -5385,16 +5355,6 @@ remark-frontmatter@^1.2.0:
     fault "^1.0.1"
     xtend "^4.0.1"
 
-remark-html-katex@^1.1.1:
-  version "1.1.1"
-  resolved "http://registry.npm.taobao.org/remark-html-katex/download/remark-html-katex-1.1.1.tgz#2d599246924fd4060ad2fdcbbdcb34ebc3fcfe4c"
-  dependencies:
-    katex "^0.9.0"
-    rehype-parse "^3.0.0"
-    unified "^6.1.1"
-    unist-util-position "^3.0.0"
-    unist-util-visit "^1.1.1"
-
 remark-math@^1.0.4:
   version "1.0.4"
   resolved "http://registry.npm.taobao.org/remark-math/download/remark-math-1.0.4.tgz#ced46473075ff99e4678a154a1a3d0dde403a9f2"
@@ -6009,10 +5969,6 @@ spdx-expression-parse@^3.0.0:
 spdx-license-ids@^3.0.0:
   version "3.0.0"
   resolved "http://r.cnpmjs.org/spdx-license-ids/download/spdx-license-ids-3.0.0.tgz#7a7cd28470cc6d3a1cfe6d66886f6bc430d3ac87"
-
-speakingurl@^14.0.1:
-  version "14.0.1"
-  resolved "http://r.cnpmjs.org/speakingurl/download/speakingurl-14.0.1.tgz#f37ec8ddc4ab98e9600c1c9ec324a8c48d772a53"
 
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
@@ -6699,7 +6655,7 @@ vue-router@^3.0.1:
   version "3.0.1"
   resolved "http://r.cnpmjs.org/vue-router/download/vue-router-3.0.1.tgz#d9b05ad9c7420ba0f626d6500d693e60092cc1e9"
 
-vue-server-renderer@2.5.17:
+vue-server-renderer@^2.5.17:
   version "2.5.17"
   resolved "https://registry.npmjs.org/vue-server-renderer/-/vue-server-renderer-2.5.17.tgz#c1f24815a4b12a2797c154549b29b44b6be004b5"
   dependencies:
@@ -6729,7 +6685,7 @@ vue-template-validator@^1.1.5:
   dependencies:
     chalk "^1.1.1"
 
-vue@2.5.17:
+vue@^2.5.17:
   version "2.5.17"
   resolved "https://registry.npmjs.org/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
 

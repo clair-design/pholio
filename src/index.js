@@ -227,7 +227,7 @@ module.exports = function main (config) {
 
 module.exports.clean = () => {
   removeSync(getCacheDir())
-  logger.succeed('Done.')
+  logger.succeed('Cache directory cleaned.')
   logger.stop()
 }
 
