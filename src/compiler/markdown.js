@@ -1,14 +1,15 @@
-/* eslint-disable no-new-func */
+const buble = require('buble')
 const md2vue = require('md2vue')
 const config = { gistInjection: '' }
-const md2vuePromise = file => new Promise((resolve, reject) => {
-  md2vue(file, config, (err, vfile) => {
-    if (err) reject(err)
-    else resolve(vfile)
+const md2vuePromise = file =>
+  new Promise((resolve, reject) => {
+    md2vue(file, config, (err, vfile) => {
+      if (err) reject(err)
+      else resolve(vfile)
+    })
   })
-})
 
-module.exports = async (file) => {
+module.exports = async file => {
   const vueEnv = process.env.VUE_ENV
   process.env.VUE_ENV = 'browser'
   const vfile = await md2vuePromise(file)
@@ -35,10 +36,10 @@ module.exports = async (file) => {
   const isMain = _route === '' || (arr[0] === 'index' && !arr[1])
   const fullPath = isMain ? '/' : `/${_route}`
 
-  const code = `(function(){
-var exports = {}
-var module = { exports: exports }
-${vfile.contents}
+  const { code } = buble.transform(vfile.contents)
+  const content = `(function(){
+var module = {}
+${code}
 module.exports.metaInfo = function () {
   return ${JSON.stringify(meta)}
 }
@@ -62,7 +63,7 @@ return module.exports
     title,
     layout,
     fullPath,
-    content: code,
+    content,
     pageNav: vfile.data.toc
   }
 }
