@@ -55,7 +55,7 @@ module.exports = function ({
       const emitNext = async result => {
         const ret = {}
         const [key] = Object.keys(result.bundles)
-        const script = result.bundles[key].code
+        const script = bubleTransform(result.bundles[key].code)
 
         ret.script = {
           content: script,
@@ -100,4 +100,15 @@ module.exports = function ({
 
   // skip the fisrt null value
   return subject.pipe(skip(1))
+}
+
+function bubleTransform (code) {
+  return require('buble').transform(code, {
+    objectAssign: 'Object.assign',
+    transforms: {
+      arrow: true,
+      modules: false,
+      dangerousForOf: true
+    }
+  }).code
 }
