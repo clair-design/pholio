@@ -2074,9 +2074,9 @@ electron-to-chromium@^1.3.57:
   version "1.3.58"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.3.58.tgz#8267a4000014e93986d9d18c65a8b4022ca75188"
 
-emballer@3.0.0-alpha.1:
-  version "3.0.0-alpha.1"
-  resolved "https://registry.npmjs.org/emballer/-/emballer-3.0.0-alpha.1.tgz#04ecb4e00e6bb8b8e456323a3714698f27a48657"
+emballer@^3.0.0-alpha.1:
+  version "3.0.0-alpha.2"
+  resolved "https://registry.npmjs.org/emballer/-/emballer-3.0.0-alpha.2.tgz#5b213a74a3472590007d00d004e561aabf1292c9"
   dependencies:
     "@babel/core" "^7.0.0-rc.1"
     "@babel/plugin-proposal-object-rest-spread" "^7.0.0-rc.1"
