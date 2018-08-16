@@ -105,20 +105,24 @@ module.exports = {
       )
 
       if (type === 'vendor' && hash === vendor.hash) {
-        return res.end(vendor.content)
+        const result = bubleTransform(vendor.content)
+        return res.end(result)
       }
 
       if (type === 'framework' && hash === bones.script.hash) {
-        return res.end(bones.script.content)
+        const result = bubleTransform(bones.script.content)
+        return res.end(result)
       }
 
       if (type === 'manifest' && hash === manifest.hash) {
-        return res.end(preprocess(manifest.content))
+        const result = preprocess(manifest.content)
+        return res.end(result)
       }
 
       if (type === 'page' && pages.has(hash)) {
         const wrapped = `__jsonpResolve(${pages.get(hash)})`
-        return res.end(preprocess(wrapped))
+        const result = preprocess(wrapped)
+        return res.end(result)
       }
 
       if (type === 'styles' && bones.styles) {
@@ -186,8 +190,13 @@ module.exports = {
 }
 
 function preprocess (code) {
+  code = bubleTransform(code)
   if (process.env.NODE_ENV === 'production') {
     return UglifyJS.minify(code).code
   }
   return code
+}
+
+function bubleTransform (code) {
+  return require('buble').transform(code).code
 }
