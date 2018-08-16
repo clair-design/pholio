@@ -54,17 +54,18 @@ module.exports = function ({
         })
       }
 
+      if (!watch) {
+        await emballer({ options: [option] })
+        return emitNext()
+      }
+
       const [watcher] = await emballer({ options: [option] }, watch)
       watcher.on('event', ({ code, error }) => {
         if (code === 'ERROR' || code === 'FATAL') {
           observer.error(error)
         }
         if (code === 'BUNDLE_END') {
-          emitNext().then(() => {
-            if (!watch) {
-              watcher.close()
-            }
-          })
+          emitNext()
         }
       })
     } catch (error) {
