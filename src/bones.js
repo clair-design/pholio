@@ -2,7 +2,7 @@ const { resolve } = require('path')
 const { from, BehaviorSubject } = require('rxjs')
 const { skip } = require('rxjs/operators')
 
-const cili = require('./util/cili')
+const rollup = require('./util/rollup')
 const renderFile = require('./util/renderFile')
 const kTemplate = resolve(__dirname, '../template/bones.js')
 
@@ -21,11 +21,10 @@ module.exports = function ({ pluginDirectory, layoutDirectory }) {
   ).subscribe(async content => {
     const isProd = process.env.NODE_ENV === 'production'
 
-    cili({
+    rollup({
       input: { path, content },
       watch: !isProd,
-      compress: isProd,
-      extractCSS: isProd
+      compress: isProd
     }).subscribe(subject)
   })
 

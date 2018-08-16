@@ -1,5 +1,6 @@
 const { resolve, join } = require('path')
 const hasSum = require('hash-sum')
+const objectHash = require('object-hash')
 const isEqual = require('lodash/isEqual')
 const { removeSync, ensureFile, writeFile, copy } = require('fs-extra')
 const { map, skip, distinctUntilChanged } = require('rxjs/operators')
@@ -59,6 +60,12 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = function main (config) {
+  const cacheDir = getCacheDir()
+  const configHash = objectHash(config).slice(0, 8)
+  getCacheDir.redirectTo(join(cacheDir, configHash))
+  // clean tempdir for rollup
+  removeSync(join(getCacheDir(), 'temp'))
+
   process.env.PORT = config.PORT || (process.env.PORT || 3000)
   const npmPrefix = process.env.NPM_PREFIX
   const staticDirectory = resolve(npmPrefix, config.assetPath)

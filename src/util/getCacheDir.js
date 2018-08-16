@@ -10,3 +10,7 @@ module.exports = () => {
 
   return cacheDir
 }
+
+module.exports.redirectTo = dir => {
+  cacheDir = dir
+}

@@ -5,7 +5,7 @@ const hashSum = require('hash-sum')
 const { readFile } = require('fs-extra')
 
 const LRU = require('./util/lru')
-const cili = require('./util/cili')
+const rollup = require('./util/rollup')
 
 let kCache = null
 const kCacheName = 'vendor.json'
@@ -28,11 +28,10 @@ const subscribe = async function (subject) {
     return subject.next(hit)
   }
 
-  cili({
+  rollup({
     input: kEntry,
     moduleName: 'createApp',
     compress: isProd,
-    extractCSS: false,
     watch: !isProd
   }).subscribe(result => {
     const ret = result.script
