@@ -1,6 +1,6 @@
 {
   "name": "pholio",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "A document generator with vue and markdown",
   "main": "src/index.js",
   "files": [
@@ -21,6 +21,7 @@
   "author": "wemlion <angusfu1126@qq.com>",
   "license": "MIT",
   "dependencies": {
+    "buble": "^0.19.3",
     "chokidar": "^2.0.4",
     "cili": "^3.1.2",
     "ejs": "^2.6.1",

@@ -104,21 +104,23 @@ module.exports = {
         type === 'styles' ? 'text/css' : 'application/javascript'
       )
 
+      const serveJS = content => res.end(preprocess(content))
+
       if (type === 'vendor' && hash === vendor.hash) {
-        return res.end(vendor.content)
+        return serveJS(vendor.content)
       }
 
       if (type === 'framework' && hash === bones.script.hash) {
-        return res.end(bones.script.content)
+        return serveJS(bones.script.content)
       }
 
       if (type === 'manifest' && hash === manifest.hash) {
-        return res.end(preprocess(manifest.content))
+        return serveJS(manifest.content)
       }
 
       if (type === 'page' && pages.has(hash)) {
         const wrapped = `__jsonpResolve(${pages.get(hash)})`
-        return res.end(preprocess(wrapped))
+        return serveJS(wrapped)
       }
 
       if (type === 'styles' && bones.styles) {

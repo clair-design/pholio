@@ -12,7 +12,6 @@ module.exports = function ({
   input,
   moduleName,
   watch,
-  compress,
   format = 'iife',
   extractCSS = false
 }) {
@@ -25,6 +24,7 @@ module.exports = function ({
     input,
     filename,
     watch,
+    format,
     moduleName,
     cwd: prefix,
     outDir: join(getCacheDir(), 'temp'),
@@ -33,7 +33,6 @@ module.exports = function ({
     jsx: 'vue',
     babel: { babelrc: false },
     plugin: ['require-context', 'vue'],
-    format: compress ? `${format}-min` : format,
     postcss: {
       extract: extractCSS
     },

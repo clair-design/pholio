@@ -31,7 +31,6 @@ const subscribe = async function (subject) {
   cili({
     input: kEntry,
     moduleName: 'createApp',
-    compress: isProd,
     extractCSS: false,
     watch: !isProd
   }).subscribe(result => {

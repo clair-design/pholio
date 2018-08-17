@@ -24,7 +24,6 @@ module.exports = function ({ pluginDirectory, layoutDirectory }) {
     cili({
       input: { path, content },
       watch: !isProd,
-      compress: isProd,
       extractCSS: isProd
     }).subscribe(subject)
   })
