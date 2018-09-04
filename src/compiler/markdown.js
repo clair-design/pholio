@@ -9,6 +9,8 @@ const md2vuePromise = file =>
     })
   })
 
+const styleInjectCode = require('fs').readFileSync(require.resolve('md2vue/lib/styleInject'))
+
 module.exports = async file => {
   const vueEnv = process.env.VUE_ENV
   process.env.VUE_ENV = 'browser'
@@ -38,8 +40,9 @@ module.exports = async file => {
 
   const contents = vfile.contents.replace(
     /styleInject = require[^\n]+/,
-    'styleInject = createApp.styleInject'
+    'styleInject = ' + styleInjectCode
   )
+
   const { code } = buble.transform(contents)
   const content = `(function(){
 var module = {}

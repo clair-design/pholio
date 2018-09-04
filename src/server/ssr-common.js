@@ -13,7 +13,6 @@ if (typeof window !== 'undefined' && window.window === window) {
 
 let cachedOption = null
 const jsonpCache = {}
-createApp.styleInject = require('md2vue/lib/styleInject')
 createApp.use = plugin => Vue.use(plugin)
 createApp.jsonp = function (id) {
   if (jsonpCache[id]) {
