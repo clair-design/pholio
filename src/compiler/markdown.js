@@ -36,7 +36,11 @@ module.exports = async file => {
   const isMain = _route === '' || (arr[0] === 'index' && !arr[1])
   const fullPath = isMain ? '/' : `/${_route}`
 
-  const { code } = buble.transform(vfile.contents)
+  const contents = vfile.contents.replace(
+    /styleInject = require[^\n]+/,
+    'styleInject = createApp.styleInject'
+  )
+  const { code } = buble.transform(contents)
   const content = `(function(){
 var module = {}
 ${code}

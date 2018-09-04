@@ -59,7 +59,7 @@ module.exports = function ({
       }
 
       const watcher = rollup.watch(option)
-      watcher.on('event', ({ code, error, result }) => {
+      watcher.on('event', ({ code, error }) => {
         if (code === 'ERROR' || code === 'FATAL') {
           observer.error(error)
         }

@@ -13,7 +13,7 @@ module.exports = function ({ extract, compress }) {
   const npmPrefix = process.env.NPM_PREFIX
 
   return [
-    postcss({ extract }),
+    postcss({ extract: true }),
     requireContext(),
     replace({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
@@ -22,7 +22,7 @@ module.exports = function ({ extract, compress }) {
       vue: resolve(npmPrefix, 'node_modules/vue/dist/vue.esm.js')
     }),
     vue({
-      css: true
+      css: false
     }),
     cjs(),
     nodeResolve({
