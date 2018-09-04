@@ -190,7 +190,7 @@ module.exports = {
 }
 
 function preprocess (code) {
-  code = bubleTransform(code)
+  // code = bubleTransform(code)
   if (process.env.NODE_ENV === 'production') {
     return UglifyJS.minify(code).code
   }
@@ -198,5 +198,6 @@ function preprocess (code) {
 }
 
 function bubleTransform (code) {
-  return require('buble').transform(code).code
+  // return require('buble').transform(code).code
+  return code
 }

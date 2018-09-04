@@ -1,5 +1,5 @@
 const { join } = require('path')
-const emballer = require('emballer')
+const rollup = require('rollup')
 const { skip } = require('rxjs/operators')
 const { BehaviorSubject, Observable } = require('rxjs')
 
@@ -15,6 +15,10 @@ module.exports = function ({
   compress,
   format = 'iife'
 }) {
+  const plugins = require('./rollupPlugins')({
+    compress,
+    extract: !watch
+  })
   const env = process.env.NODE_ENV || 'development'
   const subject = new BehaviorSubject(null)
   const file = `${env}_${uid++}`
@@ -23,19 +27,12 @@ module.exports = function ({
 
   const option = {
     input,
-    output: [
-      {
-        format: format,
-        name: moduleName,
-        file: tempScript
-      }
-    ],
-    postcss: {
-      minimize: !!compress,
-      extract: tempStyles
-    },
-    map: false,
-    uglify: !!compress
+    plugins,
+    output: {
+      format: format,
+      name: moduleName,
+      file: tempScript
+    }
   }
 
   if (typeof input === 'object') {
@@ -43,6 +40,7 @@ module.exports = function ({
       path: input.path,
       contents: input.content
     }
+    plugins.unshift(require('./rollupPluginMemory')())
   }
 
   Observable.create(async observer => {
@@ -55,12 +53,13 @@ module.exports = function ({
       }
 
       if (!watch) {
-        await emballer({ options: [option] })
+        const bundle = await rollup.rollup(option)
+        await bundle.write(option.output)
         return emitNext()
       }
 
-      const [watcher] = await emballer({ options: [option] }, watch)
-      watcher.on('event', ({ code, error }) => {
+      const watcher = rollup.watch(option)
+      watcher.on('event', ({ code, error, result }) => {
         if (code === 'ERROR' || code === 'FATAL') {
           observer.error(error)
         }
