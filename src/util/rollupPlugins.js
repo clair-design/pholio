@@ -11,15 +11,22 @@ const { uglify } = require('rollup-plugin-uglify')
 
 module.exports = function ({ extract, compress }) {
   const npmPrefix = process.env.NPM_PREFIX
+  const abs = path => resolve(npmPrefix, path)
+  const { resolveAlias = {} } = require(abs('package.json'))
 
+  Object.keys(resolveAlias).forEach(key => {
+    resolveAlias[key] = abs(resolveAlias[key])
+  })
   return [
-    postcss({ extract: true }),
+    postcss({ extract }),
     requireContext(),
     replace({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
     alias({
-      vue: resolve(npmPrefix, 'node_modules/vue/dist/vue.esm.js')
+      resolve: ['.js', '.json', '.vue'],
+      vue: abs('node_modules/vue/dist/vue.esm.js'),
+      ...resolveAlias
     }),
     vue({
       css: false
