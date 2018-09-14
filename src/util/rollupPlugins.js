@@ -24,7 +24,8 @@ module.exports = function ({ extract, compress }) {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
     alias({
-      resolve: ['.js', '.json', '.vue'],
+      // SEE https://github.com/rollup/rollup-plugin-alias/issues/26
+      resolve: ['.js', '.json', '.vue', '/index.js', '/index.vue'],
       vue: abs('node_modules/vue/dist/vue.esm.js'),
       ...resolveAlias
     }),
