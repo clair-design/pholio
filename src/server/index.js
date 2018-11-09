@@ -171,10 +171,11 @@ module.exports = {
       }
 
       try {
+        const ssrContent = await renderer.renderToString(app)
         const html = await renderSSRTempl({
           ...app.$meta().inject(),
           ...renderData,
-          ssrContent: await renderer.renderToString(app)
+          ssrContent
         })
         res.end(html)
       } catch (e) {
