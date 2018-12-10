@@ -40,7 +40,9 @@ module.exports = function ({ extract, compress }) {
       extensions: ['.js', '.json', '.vue']
     }),
     buble({
-      objectAssign: 'Object.assign'
+      objectAssign: 'Object.assign',
+      // SEE https://github.com/Rich-Harris/buble/issues/175
+      exclude: [abs('node_modules/**')]
     }),
     compress ? uglify() : {}
   ]
