@@ -42,7 +42,7 @@ module.exports = function ({ extract, compress }) {
     buble({
       objectAssign: 'Object.assign',
       // SEE https://github.com/Rich-Harris/buble/issues/175
-      exclude: [abs('node_modules/**')]
+      exclude: [abs('node_modules/vue/dist/vue.esm.js')]
     }),
     compress ? uglify() : {}
   ]
