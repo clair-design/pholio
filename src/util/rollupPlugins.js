@@ -30,7 +30,11 @@ module.exports = function ({ extract, compress }) {
       ...resolveAlias
     }),
     vue({
-      css: false
+      css: false,
+      vue: {
+        // fix: vue buble issue
+        transforms: null
+      }
     }),
     cjs(),
     nodeResolve({
