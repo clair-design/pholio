@@ -1,6 +1,6 @@
 {
   "name": "pholio",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A document generator with vue and markdown",
   "main": "src/index.js",
   "files": [
