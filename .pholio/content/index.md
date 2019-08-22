@@ -40,7 +40,6 @@ $ yarn add --dev pholio # for yarn users
 - 加入 PWA 的支持
 - 更合理地拆分文件
 
-
 ## 致谢
 
 - [bili](https://github.com/egoist/bili)

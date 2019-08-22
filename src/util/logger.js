@@ -1,4 +1,4 @@
-const ora = require('ora')
-const spinner = ora().start()
+const ora = require("ora");
+const spinner = ora().start();
 
-module.exports = spinner
+module.exports = spinner;

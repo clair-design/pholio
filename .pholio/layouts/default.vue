@@ -17,12 +17,12 @@ export default {
     currentPage() {
       const path = this.$route.path;
       return this.pages.filter(page => page.path === path)[0];
-    },
+    }
   },
   created() {
     this.pages = this.$pages
       .filter(page => page.index > 0)
       .sort((a, b) => +a.index - b.index);
-  },
+  }
 };
 </script>

@@ -1,49 +1,51 @@
-const buble = require('buble')
-const md2vue = require('md2vue')
-const config = { gistInjection: '' }
+const buble = require("buble");
+const md2vue = require("md2vue");
+const config = { gistInjection: "" };
 const md2vuePromise = file =>
   new Promise((resolve, reject) => {
     md2vue(file, config, (err, vfile) => {
-      if (err) reject(err)
-      else resolve(vfile)
-    })
-  })
+      if (err) reject(err);
+      else resolve(vfile);
+    });
+  });
 
-const styleInjectCode = require('fs').readFileSync(require.resolve('md2vue/lib/styleInject'))
+const styleInjectCode = require("fs").readFileSync(
+  require.resolve("md2vue/lib/styleInject")
+);
 
 module.exports = async file => {
-  const vueEnv = process.env.VUE_ENV
-  process.env.VUE_ENV = 'browser'
-  const vfile = await md2vuePromise(file)
-  process.env.VUE_ENV = vueEnv
+  const vueEnv = process.env.VUE_ENV;
+  process.env.VUE_ENV = "browser";
+  const vfile = await md2vuePromise(file);
+  process.env.VUE_ENV = vueEnv;
 
-  const { frontmatter } = vfile.data
+  const { frontmatter } = vfile.data;
   let {
     meta,
     vars,
     title,
     route,
     heading,
-    layout = 'default',
+    layout = "default",
     ...rest
-  } = frontmatter
+  } = frontmatter;
 
-  title = title || heading
-  layout = layout || 'default'
-  meta = meta || {}
-  meta.title = title
+  title = title || heading;
+  layout = layout || "default";
+  meta = meta || {};
+  meta.title = title;
 
-  const _route = route.replace(/^\//, '')
-  const arr = _route.split('/')
-  const isMain = _route === '' || (arr[0] === 'index' && !arr[1])
-  const fullPath = isMain ? '/' : `/${_route}`
+  const _route = route.replace(/^\//, "");
+  const arr = _route.split("/");
+  const isMain = _route === "" || (arr[0] === "index" && !arr[1]);
+  const fullPath = isMain ? "/" : `/${_route}`;
 
   const contents = vfile.contents.replace(
     /styleInject = require[^\n]+/,
-    'styleInject = ' + styleInjectCode
-  )
+    "styleInject = " + styleInjectCode
+  );
 
-  const { code } = buble.transform(contents)
+  const { code } = buble.transform(contents);
   const content = `(function(){
 var module = {}
 ${code}
@@ -63,7 +65,7 @@ module.exports.computed = {
   }
 }
 return module.exports
-})()`
+})()`;
 
   return {
     rest,
@@ -72,9 +74,9 @@ return module.exports
     fullPath,
     content,
     pageNav: vfile.data.toc
-  }
-}
+  };
+};
 
 module.exports.config = option => {
-  Object.assign(config, option)
-}
+  Object.assign(config, option);
+};
