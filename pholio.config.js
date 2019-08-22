@@ -21,5 +21,5 @@ module.exports = {
     "https://lib.baomitu.com/fetch/2.0.3/fetch.min.js"
   ],
 
-  useServiceWorker: false
+  useServiceWorker: true
 };

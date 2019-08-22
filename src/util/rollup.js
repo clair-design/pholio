@@ -1,4 +1,5 @@
 const { join } = require("path");
+const { writeFile, ensureFile } = require("fs-extra");
 const rollup = require("rollup");
 const { skip } = require("rxjs/operators");
 const { BehaviorSubject, Observable } = require("rxjs");
@@ -15,15 +16,21 @@ module.exports = function({
   compress,
   format = "iife"
 }) {
-  const plugins = require("./rollupPlugins")({
-    compress,
-    extract: !watch
-  });
   const env = process.env.NODE_ENV || "development";
   const subject = new BehaviorSubject(null);
   const file = `${env}_${uid++}`;
   const tempScript = join(getCacheDir(), "temp", `${file}.js`);
   const tempStyles = join(getCacheDir(), "temp", `${file}.css`);
+
+  const plugins = require("./rollupPlugins")({
+    compress,
+    extract: !watch,
+    async onExtract(getExtracted) {
+      await ensureFile(tempStyles);
+      await writeFile(tempStyles, getExtracted().code);
+      return false;
+    }
+  });
 
   const option = {
     input,

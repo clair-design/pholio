@@ -9,7 +9,7 @@ const requireContext = require("rollup-plugin-require-context");
 const postcss = require("rollup-plugin-postcss");
 const { uglify } = require("rollup-plugin-uglify");
 
-module.exports = function({ extract, compress }) {
+module.exports = function({ extract, onExtract, compress }) {
   const npmPrefix = process.env.NPM_PREFIX;
   const abs = path => resolve(npmPrefix, path);
   const { resolveAlias = {} } = require(abs("package.json"));
@@ -18,7 +18,16 @@ module.exports = function({ extract, compress }) {
     resolveAlias[key] = abs(resolveAlias[key]);
   });
   return [
-    postcss({ extract }),
+    postcss({
+      extract,
+      onExtract
+      // onExtract(getExtracted) {
+      //   if (extract && extractPath) {
+      //     require('fs')
+      //   }
+      //   return false;
+      // }
+    }),
     requireContext(),
     replace({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV)

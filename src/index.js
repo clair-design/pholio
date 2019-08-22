@@ -218,18 +218,25 @@ module.exports = function main(config) {
       await copy(staticDirectory, join(dest, "static"));
       logger.succeed("SSR Done.");
 
-      const stripPrefix =
-        dest.replace(/\\/g, "/") + (routerMode !== "hash" ? "" : "/");
-      const params = {
-        stripPrefix,
-        staticFileGlobs: [
-          `${dest}/static/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}`
-        ],
-        logger: data => logger.succeed(data)
-      };
-      require("sw-precache").write(`${dest}/service-worker.js`, params, () =>
-        process.exit(0)
-      );
+      // const stripPrefix =
+      // dest.replace(/\\/g, "/") + (routerMode !== "hash" ? "" : "/");
+      require("workbox-build")
+        .generateSW({
+          swDest: `${dest}/service-worker.js`,
+          modifyURLPrefix: {
+            "./": routerMode !== "hash" ? "" : "/"
+          },
+          globDirectory: `${dest}`,
+          globPatterns: [
+            `static/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff}`
+          ]
+        })
+        .then(({ count, size }) => {
+          logger.succeed(
+            `Generated service-worker.js, which will precache ${count} files, totaling ${size} bytes.`
+          );
+          process.exit(0);
+        });
     }
   });
 };
