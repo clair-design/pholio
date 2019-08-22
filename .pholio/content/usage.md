@@ -1,11 +1,11 @@
 ---
-title: '使用 pholio'
+title: "使用 pholio"
 route: /usage
 layout: default
 index: 2
 meta:
   link:
-    - rel: 'stylesheet'
+    - rel: "stylesheet"
       href: https://lib.baomitu.com/KaTeX/0.9.0/katex.min.css
   script:
     - innerHTML: console.log('Hello world.')
@@ -66,25 +66,27 @@ pholio
 
 ```js
 module.exports = {
-  plugins: './pholio/plugins', 
-  layouts: './pholio/layouts',
-  assetPath: './pholio/static',
-  pages: ['./pholio/content/**/*.md'],
-  output: './docs',
+  plugins: "./pholio/plugins",
+  layouts: "./pholio/layouts",
+  assetPath: "./pholio/static",
+  pages: ["./pholio/content/**/*.md"],
+  output: "./docs",
 
   // fallback 页面路由，通常是 404 页面或错误页面
-  errorRedirect: '/404',
+  errorRedirect: "/404",
 
   // for vue-router: hash or history
-  routerMode: 'hash',
+  routerMode: "hash",
 
   // 外部资源 通常是单独引入的 CSS/JavaScript
   externals: [
-    'https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css'
-  ]
-}
-```
+    "https://lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"
+  ],
 
+  // 是否使用 service-worker
+  useServiceWorker: false
+};
+```
 
 ## 编写布局文件
 
@@ -119,17 +121,16 @@ module.exports = {
 5. 请参考 [Vue 的插件写法](https://cn.vuejs.org/v2/guide/plugins.html)
 6. 通常 CSS 文件在插件中引入
 
-示例如下 —— 
+示例如下 ——
 
 ```js
-import MyCustomElement from '/path/to/custom-element'
+import MyCustomElement from "/path/to/custom-element";
 export default {
-  install (Vue) {
-    Vue.component('custom-element', MyCustomElement)
+  install(Vue) {
+    Vue.component("custom-element", MyCustomElement);
   }
-}
+};
 ```
-
 
 ## 编写样式
 
@@ -140,10 +141,9 @@ export default {
 1. 根据你选择的代码高亮主题（highlight.js），引入或编写相应的样式
 2. 引用或编写 Markdown 样式（如 github-markdown-theme 之类）
 3. 如果使用了 `TeX`，请自行引入 [katex](https://khan.github.io/KaTeX) 相关的 CSS 样式
-3. 布局样式及其他自定义样式
+4. 布局样式及其他自定义样式
 
 建议使用 PostCSS 编写。项目中 PostCSS 配置文件（`postcss.config.js`等），将自动应用到布局文件以及其他通过 JavaScript 引入的 CSS 文件上来。
-
 
 ## Markdown 文档编写
 
@@ -155,10 +155,11 @@ export default {
 
 ```yml
 ---
-title: '页面标题'    # 主要用于HTML中的<title></title>
-route: '/page/path' # 本文档对应的 path
-layout: 'default'   # 使用 layouts/default.vue 布局
+title: "页面标题" # 主要用于HTML中的<title></title>
+route: "/page/path" # 本文档对应的 path
+layout: "default" # 使用 layouts/default.vue 布局
 ---
+
 ```
 
 此外，你还可以使用 `meta` 字段来写入一些页面级别的 [VueMeta](https://github.com/declandewet/vue-meta) 配置。
@@ -166,7 +167,7 @@ layout: 'default'   # 使用 layouts/default.vue 布局
 ```yml
 meta:
   title: Clair
-  titleTemplate: '%s - Yay!'
+  titleTemplate: "%s - Yay!"
   htmlAttrs:
     amp: undefined
   meta:
@@ -174,12 +175,12 @@ meta:
       name: description
       content: Hello World
   style:
-    - cssText: ''
+    - cssText: ""
   script:
     - innerHTML: console.log('Hello world.')
       body: true
   noscript:
-    - innerHTML: 'This website requires JavaScript.'
+    - innerHTML: "This website requires JavaScript."
   # 注意下面这一行对于脚本来说很重要
   __dangerouslyDisableSanitizers:
     - script
@@ -201,7 +202,6 @@ meta:
 {{ JSON.stringify($page, null, 2) }}
 </pre>
 
-
 此外，你还可以自己在文档的 Front Matter 中定义 `vars` 字段，示例如下 ——
 
 ```yml
@@ -213,6 +213,7 @@ vars:
     - 蜀
     - 吴
 ---
+
 ```
 
 在 Markdown 文档中，通过 `$vars` 来获取数据。示例如下 ——
@@ -225,6 +226,7 @@ vars:
 ```
 
 展示效果 ——
+
 <div style="margin: 10px 40px 30px">
 <em v-for="country in $vars.threeKingdoms" :key="country">
 {{country}}
@@ -249,25 +251,23 @@ vars:
   </li>
 </ul>
 
-
-
-## Demo  编写
+## Demo 编写
 
 语言类型为`html`的 Markdown 代码块（Code Block）会被视为一个小型的 Vue SFC。你可以在里面写 `<template>` `<script>` `<style>`。
 
-当然，有时候你也可以省去 `<template>` 的标签，程序会在处理时自动加上。下面是示例 —— 
+当然，有时候你也可以省去 `<template>` 的标签，程序会在处理时自动加上。下面是示例 ——
 
 ```html
 <button @click="clickme()">click me</button>
 
 <script>
-export default {
-  methods: {
-    clickme () {
-      alert('hello')
+  export default {
+    methods: {
+      clickme() {
+        alert("hello");
+      }
     }
-  }
-}
+  };
 </script>
 
 <style>
@@ -290,13 +290,13 @@ export default {
 </template>
 
 <style>
-div em {
-  color: red;
-}
+  div em {
+    color: red;
+  }
 </style>
 ```
 
-其原始代码为 —— 
+其原始代码为 ——
 
 ```xml
 <template demo-only lang="pug">
@@ -312,7 +312,6 @@ div em {
 ```
 
 3. 从上面的例子可以看出，我们在代码块也能写 `pug` 模板。同样，CSS 也能够自己指定 SCSS、Stylus 等 —— 当然，需要自行安装对应的 package。具体的支持情况，需要查询 `rollup-plugin-vue`。
-
 
 ## 支持 TeX
 
@@ -335,7 +334,6 @@ https://unpkg.com/katex@0.9.0/dist/katex.min.css
 ## 其他
 
 1. 我们拓展了 `Vue` 对象的 prototype，添加了一个 `$nprogress` 对象。有必要的话你可以使用。（关于 [nprogress](https://github.com/rstacruz/nprogress/)）
-
 
 ```html
 <button @click="$nprogress.start">
