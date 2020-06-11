@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/clair-design/pholio/compare/v0.4.3...v0.5.0) (2020-06-11)
+
+### Bug Fixes
+
+- use terser instead of uglify-js ([5964153](https://github.com/clair-design/pholio/commit/59641538b5619386598d2ca5227ba3f0c6ce2d1b))
+
 ### [0.4.3](https://github.com/clair-design/pholio/compare/v0.4.2...v0.4.3) (2019-08-22)
 
 ### Bug Fixes
