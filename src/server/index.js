@@ -1,8 +1,8 @@
 const { resolve } = require("path");
 const express = require("express");
 const SSE = require("express-sse");
-const UglifyJS = require("uglify-js");
 const { createRenderer } = require("vue-server-renderer");
+const Terser = require("terser");
 
 const logger = require("../util/logger");
 const createApp = require("./ssr-common");
@@ -196,7 +196,7 @@ module.exports = {
 function preprocess(code) {
   // code = bubleTransform(code)
   if (process.env.NODE_ENV === "production") {
-    return UglifyJS.minify(code).code;
+    return Terser.minify(code).code;
   }
   return code;
 }

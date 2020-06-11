@@ -7,7 +7,7 @@ const replace = require("rollup-plugin-replace");
 const nodeResolve = require("rollup-plugin-node-resolve");
 const requireContext = require("rollup-plugin-require-context");
 const postcss = require("rollup-plugin-postcss");
-const { uglify } = require("rollup-plugin-uglify");
+const { terser } = require("rollup-plugin-terser");
 
 module.exports = function({ extract, onExtract, compress }) {
   const npmPrefix = process.env.NPM_PREFIX;
@@ -57,6 +57,6 @@ module.exports = function({ extract, onExtract, compress }) {
       // SEE https://github.com/Rich-Harris/buble/issues/175
       exclude: [abs("node_modules/vue/dist/vue.esm.js")]
     }),
-    compress ? uglify() : {}
+    compress ? terser() : {}
   ];
 };
