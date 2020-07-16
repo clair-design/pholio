@@ -37,7 +37,7 @@ if (!args[2] || !program.commands.some(c => c.name() === args[2])) {
 program.parse(args)
 
 function pholioMain (command) {
-  const name = command.name()
+  const name = command.name().trim() // the windows produces a '\r' and the end of the line. It causes the string comparing fails
   process.env.NPM_PREFIX = require('execa').shellSync('npm prefix').stdout
 
   if (name === 'build') {
