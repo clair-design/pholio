@@ -23,6 +23,7 @@
   "dependencies": {
     "buble": "^0.19.6",
     "chokidar": "^2.0.4",
+    "commander": "^5.1.0",
     "ejs": "^2.6.1",
     "execa": "^0.10.0",
     "express": "^4.16.3",
