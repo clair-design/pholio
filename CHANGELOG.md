@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/clair-design/pholio/compare/v0.5.0...v0.6.0) (2020-07-16)
+
+### Bug Fixes
+
+- commander not in dependency list ([02028af](https://github.com/clair-design/pholio/commit/02028afa2bf27eed0b05c9b2156e7086669bcf7b))
+
 ## [0.5.0](https://github.com/clair-design/pholio/compare/v0.4.3...v0.5.0) (2020-06-11)
 
 ### Bug Fixes
