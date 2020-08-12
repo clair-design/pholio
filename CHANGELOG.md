@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.6.2](https://github.com/clair-design/pholio/compare/v0.6.1...v0.6.2) (2020-08-12)
+
+### Bug Fixes
+
+- res.flush is not defined ([d6413c1](https://github.com/clair-design/pholio/commit/d6413c15f52aaab90cacbad2dd3afe308f9d536c))
+
 ### [0.6.1](https://github.com/clair-design/pholio/compare/v0.6.0...v0.6.1) (2020-07-16)
 
 ### Bug Fixes
