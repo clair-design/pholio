@@ -93,7 +93,13 @@ module.exports = {
     server.use("/favicon.ico", (req, res) => res.end(""));
 
     // SSE
-    server.use("/__sse__", sseInstance.init);
+    server.use("/__sse__", (req, res) => {
+      if (!res.flush) {
+        res.flush = res.flushHeaders;
+      }
+
+      return sseInstance.init(req, res);
+    });
 
     // special files
     server.use(RE_STATIC, (req, res, next) => {
